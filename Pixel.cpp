@@ -1,0 +1,86 @@
+#include "Pixel.h"
+
+Pixel::Pixel()
+{
+	red = 0;
+	green = 0;
+	blue = 0;
+}
+
+Pixel::Pixel(uint8_t r, uint8_t g, uint8_t b)
+{
+	red = r;
+	green = g;
+	blue = b;
+}
+
+int Pixel::getRed()
+{
+	return red;
+}
+
+int Pixel::getGreen()
+{
+	return green;
+}
+
+int Pixel::getBlue()
+{
+	return blue;
+}
+
+std::string Pixel::toString()
+{
+	std::ostringstream output;
+	output << "(" << (int) red << " " << (int) green << " " << (int) blue << ")";
+	return output.str();
+}
+
+void Pixel::makeGrayScale()
+{
+	int avg = (red + green + blue) / 3;
+	red = avg;
+	green = avg;
+	blue = avg;
+}
+
+void Pixel::threshold(int threshold)
+{
+	int avg = (red + green + blue) / 3;
+	if (avg > threshold) {
+		red = 255;
+		green = 255;
+		blue = 255;
+	}
+	else {
+		red = 0;
+		green = 0;
+		blue = 0;
+	}
+}
+
+char* Pixel::toBytes()
+{
+	char* pix = new char[3];
+	pix[0] = red;
+	pix[1] = green;
+	pix[2] = blue;
+	return pix;
+}
+
+Pixel Pixel::operator/(Pixel other)
+{
+	int newRed = (red + other.red) / 2;
+	int newGreen = (green + other.green) / 2;
+	int newBlue = (blue + other.blue) / 2;
+	return Pixel(newRed, newGreen, newBlue);
+}
+
+PrecisePixel Pixel::operator*(const float factor)
+{
+	float newRed = red * factor;
+	float newGreen = green * factor;
+	float newBlue = blue * factor;
+
+	return PrecisePixel(newRed, newGreen, newBlue);
+}
