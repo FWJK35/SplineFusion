@@ -2,6 +2,7 @@
 
 #include "Kernel.h"
 #include "Line.h"
+#include "CircleArc.h"
 
 int main()
 {
@@ -88,10 +89,11 @@ int main()
 	cout << endl << "Grayscaling complete." << endl;
 
 	cout << "Generating lines";
-	for (int i = 100; i <= 300; i += 20) {
-		Line l(100, 100, 500, i);
-		l.DrawTo(newPixels);
-	}
+	Line l(Vec(100, 100), Vec(200, 100));
+	l.DrawTo(newPixels);
+	CircleArc c(Vec(300, 100), Vec(400, 200), M_PI_2);
+	c.DrawTo(newPixels);
+
 	cout << endl << "Line generation complete." << endl;
 
 	cout << "Writing new data";

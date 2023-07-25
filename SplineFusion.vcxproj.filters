@@ -36,7 +36,7 @@
     <ClCompile Include="Coord.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Point.cpp">
+    <ClCompile Include="Vec.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="CircleArc.cpp">
@@ -65,7 +65,7 @@
     <ClInclude Include="Coord.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Point.h">
+    <ClInclude Include="Vec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="CircleArc.h">

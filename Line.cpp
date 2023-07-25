@@ -1,16 +1,16 @@
 #include "Line.h"
 
-Line::Line(int x1, int y1, int x2, int y2) : Line(Point(x1, y1), Point(x2, y2))
+Line::Line(int x1, int y1, int x2, int y2) : Line(Vec(x1, y1), Vec(x2, y2))
 {
 
 }
 
-Line::Line(Point aStart, Point aEnd)
+Line::Line(Vec aStart, Vec aEnd)
 {
 	start = aStart;
 	end = aEnd;
 	thickness = 1;
-	Point dist = (end - start);
+	Vec dist = (end - start);
 	length = std::sqrt(dist.getX() * dist.getX() + dist.getY() * dist.getY());
 }
 
@@ -21,8 +21,8 @@ double Line::getLength()
 
 void Line::DrawTo(Image& img)
 {
-	Point currentPoint = start;
-	Point step = (end - start) / (int) length;
+	Vec currentPoint = start;
+	Vec step = (end - start) / (int) length;
 	for (int d = 0; d < length; d++) {
 
 		//std::cout << d << std::endl;
