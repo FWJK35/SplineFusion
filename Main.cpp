@@ -1,6 +1,7 @@
 #include "framework.h"
 
 #include "Kernel.h"
+#include "Line.h"
 
 int main()
 {
@@ -8,7 +9,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "sword.ppm";
+	string filename = "blank.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -71,19 +72,27 @@ int main()
 
 	cout << "Convolving edge detection";
 	Kernel edge(3, "edge");
-	ogPixels.ConvolveTo(newPixels, edge, 10);
-	newPixels.CopyTo(ogPixels);
+	//ogPixels.ConvolveTo(newPixels, edge, 10);
+	//newPixels.CopyTo(ogPixels);
 	cout << endl << "Edge detection complete." << endl;
 
 	cout << "Blurring edges";
 	Kernel blur(3, "focusblur");
-	ogPixels.ConvolveTo(newPixels, blur, 10);
-	newPixels.CopyTo(ogPixels);
+	//ogPixels.ConvolveTo(newPixels, blur, 10);
+	//newPixels.CopyTo(ogPixels);
 	cout << endl << "Blurring edges complete." << endl;
 
 	cout << "Grayscaling";
+	//ogPixels.GrayScale();
+	//ogPixels.CopyTo(newPixels);
 	cout << endl << "Grayscaling complete." << endl;
 
+	cout << "Generating lines";
+	for (int i = 100; i <= 300; i += 20) {
+		Line l(100, 100, 500, i);
+		l.DrawTo(newPixels);
+	}
+	cout << endl << "Line generation complete." << endl;
 
 	cout << "Writing new data";
 	for (int y = 0; y < height; y++) {

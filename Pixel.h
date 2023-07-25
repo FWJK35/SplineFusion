@@ -13,6 +13,7 @@ private:
 public:
 	Pixel();
 	Pixel(uint8_t, uint8_t, uint8_t);
+	Pixel(uint8_t);
 
 	int getRed();
 	int getGreen();
@@ -22,6 +23,7 @@ public:
 	void makeGrayScale();
 	void threshold(int);
 	char* toBytes();
+	void operator+=(Pixel);
 	Pixel operator/(Pixel);
 	PrecisePixel operator*(float);
 };

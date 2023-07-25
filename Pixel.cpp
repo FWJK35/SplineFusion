@@ -14,6 +14,13 @@ Pixel::Pixel(uint8_t r, uint8_t g, uint8_t b)
 	blue = b;
 }
 
+Pixel::Pixel(uint8_t v)
+{
+	red = v;
+	green = v;
+	blue = v;
+}
+
 int Pixel::getRed()
 {
 	return red;
@@ -66,6 +73,16 @@ char* Pixel::toBytes()
 	pix[1] = green;
 	pix[2] = blue;
 	return pix;
+}
+
+void Pixel::operator+=(Pixel other)
+{
+	int newRed = std::min(red + other.red, 255);
+	int newGreen = std::min(green + other.green, 255);
+	int newBlue = std::min(blue + other.blue, 255);
+	red = newRed;
+	green = newGreen;
+	blue = newBlue;
 }
 
 Pixel Pixel::operator/(Pixel other)

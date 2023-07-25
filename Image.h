@@ -2,6 +2,7 @@
 
 #include "framework.h"
 #include "Kernel.h"
+#include "Coord.h"
 
 class Image
 {
@@ -13,10 +14,14 @@ private:
 public:
 	Image(int, int);
 	void WriteData(int, int, Pixel);
+	void WriteData(Coord, Pixel);
+	void AddValue(int, int, Pixel);
+	void AddValue(Coord, Pixel);
 	char* GetData(int, int);
 	Pixel GetPixel(int, int);
 	void CopyTo(Image&);
 	void ConvolveTo(Image&, Kernel&, int = 1);
 	void ConvolveRows(Image&, Kernel&, int, int);
+	void GrayScale();
 };
 
