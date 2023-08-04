@@ -3,6 +3,7 @@
 #include "Kernel.h"
 #include "Line.h"
 #include "CircleArc.h"
+#include "Spline.h";
 
 int main()
 {
@@ -10,7 +11,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "blank.ppm";
+	string filename = "nightsky.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -72,9 +73,20 @@ int main()
 	
 
 	cout << "Convolving edge detection";
-	Kernel edge(3, "edge");
-	//ogPixels.ConvolveTo(newPixels, edge, 10);
+	Kernel h(3, "sobelh");
+	Image hPixels(width, height);
+	ogPixels.ConvolveTo(hPixels, h, 10);
 	//newPixels.CopyTo(ogPixels);
+	Kernel v(3, "sobelv");
+	Image vPixels(width, height);
+	ogPixels.ConvolveTo(vPixels, v, 10);
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			ogPixels.WriteData(Coord(x, y), hPixels.GetPixel(x, y) / vPixels.GetPixel(x, y));
+		}
+	}
+	
+
 	cout << endl << "Edge detection complete." << endl;
 
 	cout << "Blurring edges";
@@ -84,15 +96,17 @@ int main()
 	cout << endl << "Blurring edges complete." << endl;
 
 	cout << "Grayscaling";
-	//ogPixels.GrayScale();
-	//ogPixels.CopyTo(newPixels);
+	ogPixels.GrayScale();
+	ogPixels.CopyTo(newPixels);
 	cout << endl << "Grayscaling complete." << endl;
 
 	cout << "Generating lines";
-	Line l(Vec(100, 100), Vec(200, 100));
-	l.DrawTo(newPixels);
-	CircleArc c(Vec(300, 100), Vec(400, 200), M_PI_2);
-	c.DrawTo(newPixels);
+	Line l(Vec(100, 100), Vec(200, 150));
+	//l.DrawTo(newPixels);
+	CircleArc c(Vec(300, 100), Vec(400, 200), 4.5);
+	//c.DrawTo(newPixels);
+	Spline s1(Vec(100, 300), Vec(200, 100), Vec(300, 400), Vec(300, 200));
+	//s1.drawTo(newPixels);
 
 	cout << endl << "Line generation complete." << endl;
 

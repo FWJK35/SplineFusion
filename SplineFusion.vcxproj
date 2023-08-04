@@ -126,6 +126,7 @@
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Pixel.cpp" />
+    <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Vec.cpp" />
     <ClCompile Include="PrecisePixel.cpp" />
   </ItemGroup>
@@ -133,10 +134,10 @@
     <ClInclude Include="CircleArc.h" />
     <ClInclude Include="Coord.h" />
     <ClInclude Include="framework.h" />
-    <ClInclude Include="Image.h" />
     <ClInclude Include="Kernel.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Pixel.h" />
+    <ClInclude Include="Spline.h" />
     <ClInclude Include="Vec.h" />
     <ClInclude Include="PrecisePixel.h" />
   </ItemGroup>

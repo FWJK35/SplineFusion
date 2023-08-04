@@ -18,7 +18,6 @@ CircleArc::CircleArc(Vec aStart, Vec aEnd, double aCurvature)
 	radius = std::sqrt(perpDist * perpDist + midDist * midDist);
 
 	length = curvature * radius;
-	std::cout << length;
 }
 
 void CircleArc::DrawTo(Image& img)

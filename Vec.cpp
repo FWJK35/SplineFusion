@@ -54,6 +54,12 @@ double Vec::getArea()
 	return std::abs(x * y);
 }
 
+Vec Vec::interpolate(Vec to, double dist)
+{
+	Vec diff = to - *this;
+	return *this + (diff * dist);
+}
+
 Vec Vec::getMidPoint(Vec other)
 {
 	return Vec((x + other.x) / 2, (y + other.y) / 2);
