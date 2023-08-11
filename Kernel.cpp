@@ -28,12 +28,12 @@ Kernel::Kernel(int aSize, std::string aType)
 			}
 			else if (type == "sobelh") {
 				float a = halfSize - j;
-				weights[i][j] = a * (halfSize + 1 - (std::abs(halfSize - i)));
+				weights[i][j] = a * (halfSize + 1 - (std::abs(halfSize - i))) / (4);
 				std::cout << weights[i][j] << " ";
 			}
 			else if (type == "sobelv") {
 				float a = halfSize - i;
-				weights[i][j] = a * (halfSize + 1 - (std::abs(halfSize - j)));
+				weights[i][j] = a * (halfSize + 1 - (std::abs(halfSize - j))) / (4);
 				std::cout << weights[i][j] << " ";
 			}
 			else if (type == "gaussblur") {
@@ -83,4 +83,60 @@ Pixel Kernel::convolve(int x, int y, Image& pixels)
 		}
 	}
 	return sum.round();
+}
+
+Vec Kernel::gradient(Coord c, Image& img)
+{
+
+	const int halfSize = 1;
+
+	PrecisePixel horizontal(0, 0, 0);
+	PrecisePixel vertical(0, 0, 0);
+
+	for (int yOffset = -halfSize; yOffset <= halfSize; yOffset++) {
+
+		int newY = c.getY() + yOffset;
+		for (int xOffset = -halfSize; xOffset <= halfSize; xOffset++) {
+			int newX = c.getX() + xOffset;
+
+			double hFactor = (double) xOffset * (halfSize + 1 - std::abs(yOffset)) / (4);
+			double vFactor = (double) yOffset * (halfSize + 1 - std::abs(xOffset)) / (4);
+
+			horizontal += img.GetPixel(newX, newY) * hFactor;
+			vertical += img.GetPixel(newX, newY) * vFactor;
+
+		}
+	}
+
+	double hSum = horizontal.getAvg() * 3;
+	double vSum = vertical.getAvg() * 3;
+
+	//std::cout << "Gradient direction is: " << std::atan(hSum / vSum) << std::endl;
+
+	return Vec(vSum, hSum);
+}
+
+double* Kernel::variance(Coord c, ImageData& vecs, ImageData& mags)
+{
+
+	const int halfSize = 1;
+	double vecVariance = 0;
+	double magVariance = 0;
+
+	double* result = new double[2];
+
+	for (int yOffset = -halfSize; yOffset <= halfSize; yOffset++) {
+
+		int newY = c.getY() + yOffset;
+		for (int xOffset = -halfSize; xOffset <= halfSize; xOffset++) {
+			int newX = c.getX() + xOffset;
+			vecVariance += std::abs(vecs.GetData(newX, newY) - vecs.GetData(c.getX(), c.getY()));
+			magVariance += std::abs(mags.GetData(newX, newY) - mags.GetData(c.getX(), c.getY()));
+
+		}
+	}
+	result[0] = vecVariance;
+	result[1] = magVariance;
+
+	return result;
 }

@@ -19,6 +19,7 @@ public:
 	void AddValue(Coord, Pixel);
 	char* GetData(int, int);
 	Pixel GetPixel(int, int);
+	Pixel GetPixel(Coord);
 	void CopyTo(Image&);
 	void ConvolveTo(Image&, Kernel&, int = 1);
 	void ConvolveRows(Image&, Kernel&, int, int);

@@ -36,6 +36,11 @@ int Pixel::getBlue()
 	return blue;
 }
 
+double Pixel::getAvg()
+{
+	return (red + green + blue) / 3.0;
+}
+
 std::string Pixel::toString()
 {
 	std::ostringstream output;
@@ -49,6 +54,13 @@ void Pixel::makeGrayScale()
 	red = avg;
 	green = avg;
 	blue = avg;
+}
+
+void Pixel::increaseConrast(double amount)
+{
+	red = ((((red / 255.0) - 0.5) * amount) + 0.5) * 255.0;
+	green = ((((green / 255.0) - 0.5) * amount) + 0.5) * 255.0;
+	blue = ((((blue / 255.0) - 0.5) * amount) + 0.5) * 255.0;
 }
 
 void Pixel::threshold(int threshold)

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "framework.h"
+#include "Coord.h"
 
 class PrecisePixel;
 
@@ -18,9 +19,11 @@ public:
 	int getRed();
 	int getGreen();
 	int getBlue();
+	double getAvg();
 
 	std::string toString();
 	void makeGrayScale();
+	void increaseConrast(double);
 	void threshold(int);
 	char* toBytes();
 	void operator+=(Pixel);

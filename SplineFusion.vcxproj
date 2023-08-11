@@ -122,6 +122,7 @@
     <ClCompile Include="CircleArc.cpp" />
     <ClCompile Include="Coord.cpp" />
     <ClCompile Include="Image.cpp" />
+    <ClCompile Include="ImageData.cpp" />
     <ClCompile Include="Kernel.cpp" />
     <ClCompile Include="Line.cpp" />
     <ClCompile Include="Main.cpp" />
@@ -134,6 +135,8 @@
     <ClInclude Include="CircleArc.h" />
     <ClInclude Include="Coord.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Image.h" />
+    <ClInclude Include="ImageData.h" />
     <ClInclude Include="Kernel.h" />
     <ClInclude Include="Line.h" />
     <ClInclude Include="Pixel.h" />

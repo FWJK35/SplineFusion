@@ -4,6 +4,7 @@
 #include "Line.h"
 #include "CircleArc.h"
 #include "Spline.h";
+#include "ImageData.h"
 
 int main()
 {
@@ -11,7 +12,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "nightsky.ppm";
+	string filename = "firefly.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -50,8 +51,8 @@ int main()
 	Image ogPixels(width, height);
 	Image newPixels(width, height);
 
+	//copy image data from PPM file to RAM
 	cout << "Copying image data";
-	
 	for (int y = 0; y < height; y++) {
 		if (y % (height / 10) == 0) {
 			cout << ".";
@@ -70,34 +71,83 @@ int main()
 	ogPixels.CopyTo(newPixels);
 	cout << endl << "Image data copying complete." << endl;
 
-	
+	//initial blur
+	cout << "Blurring edges";
+	Kernel blur(3, "gaussblur");
+	//ogPixels.ConvolveTo(newPixels, blur, 10);
+	newPixels.CopyTo(ogPixels);
+	cout << endl << "Blurring edges complete." << endl;
 
-	cout << "Convolving edge detection";
-	Kernel h(3, "sobelh");
-	Image hPixels(width, height);
-	ogPixels.ConvolveTo(hPixels, h, 10);
-	//newPixels.CopyTo(ogPixels);
-	Kernel v(3, "sobelv");
-	Image vPixels(width, height);
-	ogPixels.ConvolveTo(vPixels, v, 10);
+
+	cout << "Calculating Gradients";
+	Kernel g(3);
+	ImageData slopeVectors(width, height);
+	ImageData slopeMagnitudes(width, height);
+
+	//calculate initial edge info (magnitude and direction)
 	for (int y = 0; y < height; y++) {
+		if (y % (height / 10) == 0) {
+			cout << ".";
+		}
 		for (int x = 0; x < width; x++) {
-			ogPixels.WriteData(Coord(x, y), hPixels.GetPixel(x, y) / vPixels.GetPixel(x, y));
+			Vec grad = Kernel::gradient(Coord(x, y), ogPixels);
+			if (grad.getX() * grad.getY() >= 0) {
+				slopeVectors.WriteData(x, y, atan(grad.getY() / grad.getX()));
+			}
+			else {
+				slopeVectors.WriteData(x, y, atan(grad.getY() / grad.getX()) + M_PI);
+			}
+			
+			if (grad.getX() == 0) slopeVectors.WriteData(x, y, 0);
+			slopeMagnitudes.WriteData(x, y, grad.getDistance(Vec(0, 0)) / 255 / 3);
 		}
 	}
-	
+	cout << endl;
+	double max = 0;
+	for (int y = 0; y < height; y++) {
+		if (y % (height / 10) == 0) {
+			cout << ".";
+		}
+		for (int x = 0; x < width; x++) {
+			double hue = slopeVectors.GetData(x, y) * M_1_PI * 360;
+			double sat = 1;
+
+			double threshold = 0.02;
+			double val = sqrt(slopeMagnitudes.GetData(x, y) / (1 - threshold) - threshold);
+
+
+			double* var = Kernel::variance(Coord(x, y), slopeVectors, slopeMagnitudes);
+			//if (var[1] > 0.5) sat = 0;
+			//double val = sqrt(slopeMagnitudes.GetData(x, y));
+			PrecisePixel gradPix = PrecisePixel::fromHSV(hue, sat, val);
+			newPixels.WriteData(x, y, gradPix.round());
+		}
+	}
+	newPixels.CopyTo(ogPixels);
+
+	cout << "Convolving edge detection";
+
+	//Kernel h(3, "sobelh");
+	//Image hPixels(width, height);
+	////ogPixels.ConvolveTo(hPixels, h, 10);
+
+	//Kernel v(3, "sobelv");
+	//Image vPixels(width, height);
+	////ogPixels.ConvolveTo(vPixels, v, 10);
+
 
 	cout << endl << "Edge detection complete." << endl;
 
 	cout << "Blurring edges";
-	Kernel blur(3, "focusblur");
-	//ogPixels.ConvolveTo(newPixels, blur, 10);
+	Kernel focusblur(3, "focusblur");
+	//ogPixels.ConvolveTo(newPixels, focusblur, 10);
 	//newPixels.CopyTo(ogPixels);
+	//ogPixels.ConvolveTo(newPixels, blur, 10);
 	cout << endl << "Blurring edges complete." << endl;
 
 	cout << "Grayscaling";
-	ogPixels.GrayScale();
-	ogPixels.CopyTo(newPixels);
+	//ogPixels.GrayScale();
+	//ogPixels.CopyTo(newPixels);
 	cout << endl << "Grayscaling complete." << endl;
 
 	cout << "Generating lines";

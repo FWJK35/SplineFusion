@@ -7,6 +7,26 @@ PrecisePixel::PrecisePixel(float r, float g, float b)
 	blue = b;
 }
 
+float PrecisePixel::getRed()
+{
+	return red;
+}
+
+float PrecisePixel::getGreen()
+{
+	return green;
+}
+
+float PrecisePixel::getBlue()
+{
+	return blue;
+}
+
+double PrecisePixel::getAvg()
+{
+	return (red + green + blue) / 3.0;
+}
+
 Pixel PrecisePixel::round()
 {
 	red = std::abs(red);
@@ -25,6 +45,34 @@ Pixel PrecisePixel::round()
 		newBlue = 511 - newBlue;
 	}
 	return Pixel((uint8_t)newRed, (uint8_t)newGreen, (uint8_t)newBlue);
+}
+
+PrecisePixel PrecisePixel::fromHSV(double hue, double sat, double val)
+{
+	double M = 255 * val;
+	double m = M * (1 - sat);
+	double z = (M - m) * (1 - std::abs(std::fmod(hue / 60, 2) - 1));
+	switch ((int)hue / 60) {
+	case 0:
+		return PrecisePixel(M, z + m, m);
+		break;
+	case 1:
+		return PrecisePixel(z + m, M, m);
+		break;
+	case 2:
+		return PrecisePixel(m, M, z + m);
+		break;
+	case 3:
+		return PrecisePixel(m, z + m, M);
+		break;
+	case 4:
+		return PrecisePixel(z + m, m, M);
+		break;
+	case 5:
+		return PrecisePixel(M, m, z + m);
+		break;
+	}
+	
 }
 
 std::string PrecisePixel::toString()

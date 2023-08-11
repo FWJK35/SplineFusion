@@ -61,6 +61,11 @@ Pixel Image::GetPixel(int x, int y)
 	return data[y * width + x];
 }
 
+Pixel Image::GetPixel(Coord c)
+{
+	return GetPixel(c.getX(), c.getY());
+}
+
 void Image::CopyTo(Image& newImage)
 {
 	for (int y = 0; y < height; y++) {
