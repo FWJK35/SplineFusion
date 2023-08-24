@@ -1,23 +1,13 @@
-#include "ImageData.h"
+#include "VecField.h"
 
-ImageData::ImageData(int aWidth, int aHeight)
+VecField::VecField(int aWidth, int aHeight)
 {
 	width = aWidth;
 	height = aHeight;
-	data = new double[width * height];
+	data = new Vec[width * height];
 }
 
-int ImageData::getWidth()
-{
-	return width;
-}
-
-int ImageData::getHeight()
-{
-	return height;
-}
-
-void ImageData::WriteData(int x, int y, double newData)
+void VecField::WriteData(int x, int y, Vec newData)
 {
 	if (x < 0 || y < 0 || x >= width || y >= height) {
 		if (x < 0) x = 0;
@@ -28,12 +18,12 @@ void ImageData::WriteData(int x, int y, double newData)
 	data[y * width + x] = newData;
 }
 
-void ImageData::WriteData(Coord c, double newData)
+void VecField::WriteData(Coord c, Vec newData)
 {
 	WriteData(c.getX(), c.getY(), newData);
 }
 
-void ImageData::AddValue(int x, int y, double toAdd)
+void VecField::AddValue(int x, int y, Vec toAdd)
 {
 	if (x < 0 || y < 0 || x >= width || y >= height) {
 		if (x < 0) x = 0;
@@ -41,15 +31,16 @@ void ImageData::AddValue(int x, int y, double toAdd)
 		if (x >= width) x = width - 1;
 		if (y >= height) y = height - 1;
 	}
+
 	data[y * width + x] += toAdd;
 }
 
-void ImageData::AddValue(Coord c, double toAdd)
+void VecField::AddValue(Coord c, Vec toAdd)
 {
 	AddValue(c.getX(), c.getY(), toAdd);
 }
 
-double ImageData::GetData(int x, int y)
+Vec VecField::GetData(int x, int y)
 {
 	if (x < 0 || y < 0 || x >= width || y >= height) {
 		if (x < 0) x = 0;
@@ -60,16 +51,11 @@ double ImageData::GetData(int x, int y)
 	return data[y * width + x];
 }
 
-double ImageData::GetData(Coord c)
-{
-	return GetData(c.getX(), c.getY());
-}
-
-void ImageData::CopyTo(ImageData& newImageData)
+void VecField::CopyTo(VecField& newVecField)
 {
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-			newImageData.WriteData(x, y, GetData(x, y));
+			newVecField.WriteData(x, y, GetData(x, y));
 		}
 	}
 }

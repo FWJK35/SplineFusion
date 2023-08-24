@@ -12,11 +12,15 @@ private:
 
 public:
 	ImageData(int, int);
+	int getWidth();
+	int getHeight();
+
 	void WriteData(int, int, double);
 	void WriteData(Coord, double);
 	void AddValue(int, int, double);
 	void AddValue(Coord, double);
 	double GetData(int, int);
+	double GetData(Coord);
 	void CopyTo(ImageData&);
 };
 

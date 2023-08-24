@@ -7,6 +7,16 @@ Image::Image(int aWidth, int aHeight)
 	data = new Pixel[width * height];
 }
 
+int Image::getWidth()
+{
+	return width;
+}
+
+int Image::getHeight()
+{
+	return height;
+}
+
 void Image::WriteData(int x, int y, Pixel newData)
 {
 	if (x < 0 || y < 0 || x >= width || y >= height) {

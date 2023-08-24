@@ -119,8 +119,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Canny.cpp" />
     <ClCompile Include="CircleArc.cpp" />
     <ClCompile Include="Coord.cpp" />
+    <ClCompile Include="EdgeGroup.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageData.cpp" />
     <ClCompile Include="Kernel.cpp" />
@@ -130,10 +132,13 @@
     <ClCompile Include="Spline.cpp" />
     <ClCompile Include="Vec.cpp" />
     <ClCompile Include="PrecisePixel.cpp" />
+    <ClCompile Include="VecField.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Canny.h" />
     <ClInclude Include="CircleArc.h" />
     <ClInclude Include="Coord.h" />
+    <ClInclude Include="EdgeGroup.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageData.h" />
@@ -143,6 +148,7 @@
     <ClInclude Include="Spline.h" />
     <ClInclude Include="Vec.h" />
     <ClInclude Include="PrecisePixel.h" />
+    <ClInclude Include="VecField.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -37,3 +37,20 @@ Coord Coord::operator-(Coord c)
 {
     return Coord(x - c.x, y - c.y);
 }
+
+Coord Coord::operator*(int i)
+{
+    return Coord(x * i, y * i);
+}
+
+void Coord::operator+=(Coord c)
+{
+    x += c.x;
+    y += c.y;
+}
+
+void Coord::operator-=(Coord c)
+{
+    x -= c.x;
+    y -= c.y;
+}

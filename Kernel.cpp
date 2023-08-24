@@ -1,6 +1,6 @@
 #include "Kernel.h"
 
-Kernel::Kernel(int aSize, std::string aType)
+Kernel::Kernel(int aSize, std::string aType, double stdv)
 {
 	size = aSize;
 	halfSize = size / 2;
@@ -26,23 +26,18 @@ Kernel::Kernel(int aSize, std::string aType)
 					weights[i][j] = -1.0f;
 				}
 			}
-			else if (type == "sobelh") {
-				float a = halfSize - j;
-				weights[i][j] = a * (halfSize + 1 - (std::abs(halfSize - i))) / (4);
-				std::cout << weights[i][j] << " ";
-			}
-			else if (type == "sobelv") {
-				float a = halfSize - i;
-				weights[i][j] = a * (halfSize + 1 - (std::abs(halfSize - j))) / (4);
-				std::cout << weights[i][j] << " ";
-			}
-			else if (type == "gaussblur") {
+			else if (type == "gauss") {
 				double distx = (j - halfSize);
 				double disty = (i - halfSize);
-				double stddv = 1;
-				double calc = 1.0 / (2 * M_PI * stddv * stddv) * pow(M_E,  (distx * distx + disty * disty) / -2 * (stddv * stddv));
+				double calc = exp((distx * distx + disty * disty) /  (-2 * (stdv * stdv)));
 				weights[i][j] = calc;
-				std::cout << calc << " ";
+			}
+			else if (type == "laplace") {
+				double distx = (j - halfSize);
+				double disty = (i - halfSize);
+				double calc = ((distx * distx + disty * disty) / (2 * stdv * stdv) - 1) * exp((distx * distx + disty * disty) / (-2 * (stdv * stdv)));
+				
+				weights[i][j] = calc;
 			}
 			else if (type == "focusblur") {
 				if (i == 0 || j == 0 || i == size - 1 || j == size - 1) {
@@ -58,6 +53,24 @@ Kernel::Kernel(int aSize, std::string aType)
 			
 		}
 	}
+	if (type == "gauss" || type == "laplace") {
+		double sum = 0;
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				sum += weights[i][j];
+			}
+		}
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				weights[i][j] /= sum;
+				std::cout << weights[i][j] << " ";
+				if (j == size - 1) {
+					std::cout << std::endl;
+				}
+			}
+		}
+	}
+
 }
 
 int Kernel::getSize()
@@ -68,6 +81,11 @@ int Kernel::getSize()
 float** Kernel::getWeights()
 {
 	return weights;
+}
+
+void Kernel::setWeight(int x, int y, float newWeight)
+{
+	weights[y][x] = newWeight;
 }
 
 Pixel Kernel::convolve(int x, int y, Image& pixels)
@@ -85,35 +103,20 @@ Pixel Kernel::convolve(int x, int y, Image& pixels)
 	return sum.round();
 }
 
-Vec Kernel::gradient(Coord c, Image& img)
+double Kernel::convolve(int x, int y, ImageData& imgData)
 {
-
-	const int halfSize = 1;
-
-	PrecisePixel horizontal(0, 0, 0);
-	PrecisePixel vertical(0, 0, 0);
+	double sum = 0;
 
 	for (int yOffset = -halfSize; yOffset <= halfSize; yOffset++) {
 
-		int newY = c.getY() + yOffset;
+		int newY = y + yOffset;
 		for (int xOffset = -halfSize; xOffset <= halfSize; xOffset++) {
-			int newX = c.getX() + xOffset;
-
-			double hFactor = (double) xOffset * (halfSize + 1 - std::abs(yOffset)) / (4);
-			double vFactor = (double) yOffset * (halfSize + 1 - std::abs(xOffset)) / (4);
-
-			horizontal += img.GetPixel(newX, newY) * hFactor;
-			vertical += img.GetPixel(newX, newY) * vFactor;
-
+			int newX = x + xOffset;
+			sum += imgData.GetData(newX, newY) * weights[yOffset + halfSize][xOffset + halfSize];
 		}
 	}
 
-	double hSum = horizontal.getAvg() * 3;
-	double vSum = vertical.getAvg() * 3;
-
-	//std::cout << "Gradient direction is: " << std::atan(hSum / vSum) << std::endl;
-
-	return Vec(vSum, hSum);
+	return sum;
 }
 
 double* Kernel::variance(Coord c, ImageData& vecs, ImageData& mags)

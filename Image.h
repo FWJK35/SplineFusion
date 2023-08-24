@@ -13,6 +13,9 @@ private:
 
 public:
 	Image(int, int);
+	int getWidth();
+	int getHeight();
+
 	void WriteData(int, int, Pixel);
 	void WriteData(Coord, Pixel);
 	void AddValue(int, int, Pixel);

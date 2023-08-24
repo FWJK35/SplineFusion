@@ -22,7 +22,10 @@ public:
 	PrecisePixel operator*(const float);
 	void operator+=(PrecisePixel);
 
+	static PrecisePixel fromRGB(double, double, double);
+	static PrecisePixel fromRGB(PrecisePixel);
 	static PrecisePixel fromHSV(double, double, double);
+	static PrecisePixel fromHSV(PrecisePixel);
 };
 
 #include "Pixel.h"

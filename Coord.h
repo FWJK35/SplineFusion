@@ -18,4 +18,7 @@ public:
 
 	Coord operator+(Coord c);
 	Coord operator-(Coord c);
+	Coord operator*(int i);
+	void operator+=(Coord c);
+	void operator-=(Coord c);
 };

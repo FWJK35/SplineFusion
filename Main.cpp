@@ -1,10 +1,11 @@
 #include "framework.h"
 
+#include "Canny.h"
 #include "Kernel.h"
 #include "Line.h"
 #include "CircleArc.h"
-#include "Spline.h";
-#include "ImageData.h"
+#include "Spline.h"
+#include "EdgeGroup.h"
 
 int main()
 {
@@ -12,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "firefly.ppm";
+	string filename = "lines.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -73,77 +74,100 @@ int main()
 
 	//initial blur
 	cout << "Blurring edges";
-	Kernel blur(3, "gaussblur");
-	//ogPixels.ConvolveTo(newPixels, blur, 10);
-	newPixels.CopyTo(ogPixels);
+	Kernel blur(3, "gauss", 1);
+	Image blurred(ogPixels);
+	ogPixels.ConvolveTo(blurred, blur, 10);
+	blurred.CopyTo(ogPixels);
 	cout << endl << "Blurring edges complete." << endl;
 
+	cout << "Calculating Sobel Gradients" << endl;
 
-	cout << "Calculating Gradients";
-	Kernel g(3);
-	ImageData slopeVectors(width, height);
+	VecField edgeVecs(width, height);
+	ImageData slopeNormalDirections(width, height);
+	ImageData slopeDirections(width, height);
 	ImageData slopeMagnitudes(width, height);
 
-	//calculate initial edge info (magnitude and direction)
+	Canny::Sobel(ogPixels, slopeNormalDirections, slopeMagnitudes, edgeVecs);
 	for (int y = 0; y < height; y++) {
-		if (y % (height / 10) == 0) {
-			cout << ".";
-		}
 		for (int x = 0; x < width; x++) {
-			Vec grad = Kernel::gradient(Coord(x, y), ogPixels);
-			if (grad.getX() * grad.getY() >= 0) {
-				slopeVectors.WriteData(x, y, atan(grad.getY() / grad.getX()));
-			}
-			else {
-				slopeVectors.WriteData(x, y, atan(grad.getY() / grad.getX()) + M_PI);
-			}
-			
-			if (grad.getX() == 0) slopeVectors.WriteData(x, y, 0);
-			slopeMagnitudes.WriteData(x, y, grad.getDistance(Vec(0, 0)) / 255 / 3);
+			double normal = slopeNormalDirections.GetData(x, y);
+			if (normal > M_PI_2)
+				slopeDirections.WriteData(x, y, normal - M_PI_2);
+			else
+				slopeDirections.WriteData(x, y, normal + M_PI_2);
 		}
 	}
-	cout << endl;
+
+	cout << "Calculating Laplacian" << endl;
+
+	ImageData laplacian(width, height);
+
+	Canny::Laplacian(ogPixels, slopeNormalDirections, slopeMagnitudes, laplacian);
+
+	cout << "Thresholding Edges" << endl;
+
+	ImageData thresholded(width, height);
+
+	Canny::Threshold(laplacian, slopeMagnitudes, 0.005, 0.02, thresholded);
+
+	//ImageData thresholded contains all pixels that are part of an edge
+
+	cout << "Finding Edge Groups" << endl;
+	vector<EdgeGroup*> edgeGroups;
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			if (thresholded.GetData(x, y) == 1) {
+				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
+				edgeGroups.push_back(group);
+			}
+		}
+	}
+	cout << edgeGroups.size() << endl;
+	vector<EdgeGroup*>::iterator g;
+	for (g = edgeGroups.begin(); g < edgeGroups.end(); g++) {
+		EdgeGroup group = **g;
+		//double color = (std::rand() % 360) / 360.0 * M_PI;
+		//double color = M_PI * (edgeGroups.end() - g) / edgeGroups.size();
+		if (group.getSize() == 290) {
+			cout << group.getAvgDirection() << " " << group.getVariation() << endl;
+		}
+		double color = (group.getSize() % 360) / 360.0 * M_PI;
+		double sat = 1 - group.getVariation() * M_2_PI;
+		for (int i = 0; i < group.getSize(); i++) {
+			thresholded.WriteData(group.getPoints()[i], sat);
+
+			slopeMagnitudes.WriteData(group.getPoints()[i], 1);
+
+			slopeDirections.WriteData(group.getPoints()[i], color);
+		}
+		
+	}
+	
+
+	//converts data to pixel data
 	double max = 0;
 	for (int y = 0; y < height; y++) {
-		if (y % (height / 10) == 0) {
-			cout << ".";
-		}
 		for (int x = 0; x < width; x++) {
-			double hue = slopeVectors.GetData(x, y) * M_1_PI * 360;
-			double sat = 1;
+
+
+			double hue = slopeDirections.GetData(x, y) * M_1_PI * 360;
+			double sat = slopeMagnitudes.GetData(x, y);
+			double val = thresholded.GetData(x, y);
+
 
 			double threshold = 0.02;
-			double val = sqrt(slopeMagnitudes.GetData(x, y) / (1 - threshold) - threshold);
+			//double val = sqrt(slopeMagnitudes.GetData(x, y) / (1 - threshold) - threshold);
 
 
-			double* var = Kernel::variance(Coord(x, y), slopeVectors, slopeMagnitudes);
+			//double* var = Kernel::variance(Coord(x, y), slopeDirections, slopeMagnitudes);
 			//if (var[1] > 0.5) sat = 0;
-			//double val = sqrt(slopeMagnitudes.GetData(x, y));
+			
+			
+			//val = sat;
 			PrecisePixel gradPix = PrecisePixel::fromHSV(hue, sat, val);
 			newPixels.WriteData(x, y, gradPix.round());
 		}
 	}
-	newPixels.CopyTo(ogPixels);
-
-	cout << "Convolving edge detection";
-
-	//Kernel h(3, "sobelh");
-	//Image hPixels(width, height);
-	////ogPixels.ConvolveTo(hPixels, h, 10);
-
-	//Kernel v(3, "sobelv");
-	//Image vPixels(width, height);
-	////ogPixels.ConvolveTo(vPixels, v, 10);
-
-
-	cout << endl << "Edge detection complete." << endl;
-
-	cout << "Blurring edges";
-	Kernel focusblur(3, "focusblur");
-	//ogPixels.ConvolveTo(newPixels, focusblur, 10);
-	//newPixels.CopyTo(ogPixels);
-	//ogPixels.ConvolveTo(newPixels, blur, 10);
-	cout << endl << "Blurring edges complete." << endl;
 
 	cout << "Grayscaling";
 	//ogPixels.GrayScale();
@@ -151,12 +175,6 @@ int main()
 	cout << endl << "Grayscaling complete." << endl;
 
 	cout << "Generating lines";
-	Line l(Vec(100, 100), Vec(200, 150));
-	//l.DrawTo(newPixels);
-	CircleArc c(Vec(300, 100), Vec(400, 200), 4.5);
-	//c.DrawTo(newPixels);
-	Spline s1(Vec(100, 300), Vec(200, 100), Vec(300, 400), Vec(300, 200));
-	//s1.drawTo(newPixels);
 
 	cout << endl << "Line generation complete." << endl;
 

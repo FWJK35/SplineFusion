@@ -14,12 +14,13 @@ private:
 	std::string type;
 	float** weights;
 public:
-	Kernel(int, std::string = "");
+	Kernel(int, std::string = "", double = 1);
 	int getSize();
 	float** getWeights();
+	void setWeight(int, int, float);
 	Pixel convolve(int, int, Image&);
+	double convolve(int, int, ImageData&);
 
-	static Vec gradient(Coord, Image&);
 	static double* variance(Coord, ImageData&, ImageData&);
 };
 
