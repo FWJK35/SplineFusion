@@ -28,6 +28,13 @@ void Coord::abs()
     y = std::abs(y);
 }
 
+std::string Coord::toString()
+{
+    std::ostringstream out;
+    out << "(" << x << ", " << y << ")";
+    return out.str();
+}
+
 Coord Coord::operator+(Coord c)
 {
     return Coord(x + c.x, y + c.y);
@@ -53,4 +60,9 @@ void Coord::operator-=(Coord c)
 {
     x -= c.x;
     y -= c.y;
+}
+
+bool Coord::operator==(Coord c)
+{
+    return (x == c.x && y == c.y);
 }

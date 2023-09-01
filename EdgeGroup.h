@@ -1,13 +1,13 @@
 #pragma once
 
 #include "framework.h"
-#include "Coord.h"
+#include "Node.h"
 #include "ImageData.h"
 
 class EdgeGroup
 {
 private:
-	std::vector<Coord> points;
+	std::vector<Node*> points;
 	double avgDirection;
 	double variation;
 
@@ -20,8 +20,10 @@ public:
 	int getSize();
 	double getAvgDirection();
 	double getVariation();
-	std::vector<Coord> getPoints();
+	std::vector<Node*> getPoints();
+	Node* getNode(int, int);
 	
-	void StemFrom(int, int, ImageData&, ImageData&);
+	Node* StemFrom(int, int, ImageData&, ImageData&);
+	void Order();
 };
 

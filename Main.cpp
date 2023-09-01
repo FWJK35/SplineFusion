@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "lines.ppm";
+	string filename = "firefly.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -118,27 +118,36 @@ int main()
 		for (int x = 0; x < width; x++) {
 			if (thresholded.GetData(x, y) == 1) {
 				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
+				cout << (*group).getSize() << " ";
 				edgeGroups.push_back(group);
 			}
 		}
 	}
 	cout << edgeGroups.size() << endl;
-	vector<EdgeGroup*>::iterator g;
-	for (g = edgeGroups.begin(); g < edgeGroups.end(); g++) {
-		EdgeGroup group = **g;
+	for (EdgeGroup* g : edgeGroups) {
+		
+	}
+
+
+	//color pixels by edgegroup data
+	for (EdgeGroup* g : edgeGroups) {
+		EdgeGroup group = *g;
 		//double color = (std::rand() % 360) / 360.0 * M_PI;
 		//double color = M_PI * (edgeGroups.end() - g) / edgeGroups.size();
-		if (group.getSize() == 290) {
-			cout << group.getAvgDirection() << " " << group.getVariation() << endl;
-		}
 		double color = (group.getSize() % 360) / 360.0 * M_PI;
 		double sat = 1 - group.getVariation() * M_2_PI;
-		for (int i = 0; i < group.getSize(); i++) {
-			thresholded.WriteData(group.getPoints()[i], sat);
+		for (Node* n : group.getPoints()) {
+			Coord c = (*n).getLocation();
 
-			slopeMagnitudes.WriteData(group.getPoints()[i], 1);
+			//(*n).printData();
 
-			slopeDirections.WriteData(group.getPoints()[i], color);
+			thresholded.WriteData(c, sat);
+
+			slopeMagnitudes.WriteData(c, 1);
+
+			slopeDirections.WriteData(c, color);
+			//slopeDirections.WriteData(c, 0.125 * M_PI * (*n).getNeighbors());
+			
 		}
 		
 	}

@@ -16,9 +16,12 @@ public:
 
 	void abs();
 
+	std::string toString();
+
 	Coord operator+(Coord c);
 	Coord operator-(Coord c);
 	Coord operator*(int i);
 	void operator+=(Coord c);
 	void operator-=(Coord c);
+	bool operator==(Coord c);
 };
