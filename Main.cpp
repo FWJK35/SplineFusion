@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "firefly.ppm";
+	string filename = "champs.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -146,7 +146,7 @@ int main()
 			slopeMagnitudes.WriteData(c, 1);
 
 			slopeDirections.WriteData(c, color);
-			//slopeDirections.WriteData(c, 0.125 * M_PI * (*n).getNeighbors());
+			slopeDirections.WriteData(c, 0.125 * M_PI * (*n).getNeighbors());
 			
 		}
 		

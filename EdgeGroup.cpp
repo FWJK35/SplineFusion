@@ -12,6 +12,7 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 {
 	//collect points
 	StemFrom(x, y, edges, angles);
+	//connect points to all adjacent ones
 	for (Node* nPointer : points) {
 		Node n = *nPointer;
 		//std::cout << std::endl << n.getLocation().toString();
@@ -27,6 +28,40 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 			}
 		}
 	}
+	for (Node* nPointer : points) {
+		Node n = *nPointer;
+		if (n.getNeighbors() > 2) {
+			double minDiffA = M_PI;
+			Node* pointerA = nullptr;
+			double minDiffB = M_PI;
+			Node* pointerB = nullptr;
+			for (int testedNode = 0; testedNode < n.getNeighbors(); testedNode++) {
+				Node c = *(n.getConnections()[testedNode]);
+				Coord diff = c.getLocation() - n.getLocation();
+				double angleDiff = compareAngles(angles.GetData(n.getLocation()), std::atan((double)-diff.getY() / diff.getX()));
+				if (angleDiff < minDiffA) {
+					//shift A to B
+					pointerB = pointerA;
+					minDiffB = minDiffA;
+					//make A new lowest diff
+					pointerA = n.getConnections()[testedNode];
+					minDiffA = angleDiff;
+				}
+				else if (angleDiff < minDiffB) {
+					//make B new second lowest diff
+					pointerB = n.getConnections()[testedNode];
+					minDiffB = angleDiff;
+				}
+			}
+			for (Node* c : n.getConnections()) {
+				if (c != pointerA && c != pointerB) {
+					(*nPointer).Disconnect(c);
+				}
+			}
+			
+		}
+	}
+
 
 	double avgX = 0;
 	double avgY = 0;

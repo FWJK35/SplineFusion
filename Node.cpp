@@ -26,6 +26,7 @@ void Node::Disconnect(Node* n)
 			connections.erase(it);
 			return;
 		}
+		it++;
 	}
 }
 
