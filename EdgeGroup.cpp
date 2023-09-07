@@ -14,51 +14,60 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 	StemFrom(x, y, edges, angles);
 	//connect points to all adjacent ones
 	for (Node* nPointer : points) {
-		Node n = *nPointer;
+		Node& n = *nPointer;
+		if (n.getLocation() == Coord(578, 473)) {
+			std::cout << "Pause";
+		}
 		//std::cout << std::endl << n.getLocation().toString();
 		for (Node* cPointer : points) {
-			Node c = *cPointer;
+			Node& c = *cPointer;
 			Coord diff = c.getLocation() - n.getLocation();
+			//if node is adjacent and not same node
 			if (diff.getX() >= -1 && diff.getX() <= 1 && diff.getY() >= -1 && diff.getY() <= 1
 				&& !(n.getLocation() == c.getLocation())) {
+				//connect if nodes direction is close and direction of travel is close
 				if (compareAngles(angles.GetData(n.getLocation()), angles.GetData(c.getLocation())) < M_PI_4
 					&& compareAngles(angles.GetData(n.getLocation()), std::atan((double)-diff.getY() / diff.getX())) < M_PI_4) {
-					(*nPointer).Connect(cPointer);
+					n.Connect(cPointer);
 				}
 			}
 		}
-	}
-	for (Node* nPointer : points) {
-		Node n = *nPointer;
-		if (n.getNeighbors() > 2) {
-			double minDiffA = M_PI;
-			Node* pointerA = nullptr;
-			double minDiffB = M_PI;
-			Node* pointerB = nullptr;
-			for (int testedNode = 0; testedNode < n.getNeighbors(); testedNode++) {
-				Node c = *(n.getConnections()[testedNode]);
-				Coord diff = c.getLocation() - n.getLocation();
-				double angleDiff = compareAngles(angles.GetData(n.getLocation()), std::atan((double)-diff.getY() / diff.getX()));
-				if (angleDiff < minDiffA) {
-					//shift A to B
-					pointerB = pointerA;
-					minDiffB = minDiffA;
-					//make A new lowest diff
-					pointerA = n.getConnections()[testedNode];
-					minDiffA = angleDiff;
-				}
-				else if (angleDiff < minDiffB) {
-					//make B new second lowest diff
-					pointerB = n.getConnections()[testedNode];
-					minDiffB = angleDiff;
-				}
+		//only keep 2 closest matches of travel direction to current one
+		double minDiffA = M_PI;
+		Node* pointerA = nullptr;
+		double minDiffB = M_PI;
+		Node* pointerB = nullptr;
+		for (Node* cPointer : n.getConnections()) {
+			Node& c = *cPointer;
+			Coord diff = c.getLocation() - n.getLocation();
+			double angleDiff = compareAngles(angles.GetData(n.getLocation()), std::atan((double)-diff.getY() / diff.getX()));
+			if (angleDiff < minDiffA) {
+				//shift A to B
+				pointerB = pointerA;
+				minDiffB = minDiffA;
+				//make A new lowest diff
+				pointerA = cPointer;
+				minDiffA = angleDiff;
 			}
-			for (Node* c : n.getConnections()) {
-				if (c != pointerA && c != pointerB) {
-					(*nPointer).Disconnect(c);
-				}
+			else if (angleDiff < minDiffB) {
+				//make B new second lowest diff
+				pointerB = cPointer;
+				minDiffB = angleDiff;
 			}
-			
+		}
+		for (Node* cPointer : n.getConnections()) {
+			if (cPointer != pointerA && cPointer != pointerB) {
+				if (n.getLocation() == Coord(578, 473)) {
+					std::cout << n.Disconnect(cPointer);
+				}
+				else {
+					n.Disconnect(cPointer);
+				}
+				
+			}
+		}
+		if (n.getLocation() == Coord(578, 473)) {
+			std::cout << "End";
 		}
 	}
 
@@ -133,7 +142,7 @@ Node* EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 				//some angle similarity value
 				if (compareAngles(angles.GetData(newX, newY), angles.GetData(x, y)) < M_PI_4) {
 					//also check that angle direction is close enough to connection direction
-					if (compareAngles(angles.GetData(newX, newY), std::atan((double)-yOffset / xOffset)) < M_PI_4) {
+					if (compareAngles(angles.GetData(newX, newY), std::atan((double)-yOffset / xOffset)) < M_PI_2) {
 						StemFrom(newX, newY, edges, angles);
 					}
 				}

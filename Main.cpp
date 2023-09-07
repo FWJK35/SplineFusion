@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "champs.ppm";
+	string filename = "mai.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -108,7 +108,7 @@ int main()
 
 	ImageData thresholded(width, height);
 
-	Canny::Threshold(laplacian, slopeMagnitudes, 0.005, 0.02, thresholded);
+	Canny::Threshold(laplacian, slopeMagnitudes, 0.000, 0.00, thresholded);
 
 	//ImageData thresholded contains all pixels that are part of an edge
 
@@ -118,7 +118,7 @@ int main()
 		for (int x = 0; x < width; x++) {
 			if (thresholded.GetData(x, y) == 1) {
 				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
-				cout << (*group).getSize() << " ";
+				//cout << (*group).getSize() << " ";
 				edgeGroups.push_back(group);
 			}
 		}

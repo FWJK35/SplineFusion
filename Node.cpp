@@ -20,9 +20,15 @@ void Node::Connect(Node* n)
 
 void Node::Disconnect(Node* n)
 {
+	// for (Node* c : connections) {
+	// 	if (c == n) {
+	// 		connections.
+	//  		return 1;
+	// 	}
+	// }
 	std::vector<Node*>::iterator it = connections.begin();
 	while (it != connections.end()) {
-		if (location == (*n).getLocation()) {
+		if ((**it).getLocation() == (*n).getLocation()) {
 			connections.erase(it);
 			return;
 		}

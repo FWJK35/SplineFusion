@@ -103,6 +103,7 @@ StyleCopReport.xml
 *.svclog
 *.scc
 *.json
+*.exe
 
 # Chutzpah Test files
 _Chutzpah*

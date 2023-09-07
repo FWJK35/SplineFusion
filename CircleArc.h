@@ -3,7 +3,7 @@
 #include "framework.h"
 
 #include "Vec.h"
-#include "Image.h";
+#include "Image.h"
 
 class CircleArc
 {

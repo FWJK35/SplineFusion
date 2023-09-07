@@ -118,6 +118,8 @@ PrecisePixel PrecisePixel::fromHSV(double hue, double sat, double val)
 	case 5:
 		return PrecisePixel(M, m, z + m);
 		break;
+	default:
+		return PrecisePixel(0, 0, 0);
 	}
 
 }
