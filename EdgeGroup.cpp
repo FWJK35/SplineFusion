@@ -1,13 +1,5 @@
 #include "EdgeGroup.h"
 
-double EdgeGroup::compareAngles(double a, double b)
-{
-    double temp = std::min(a, b);
-    b = std::max(a, b);
-    a = temp;
-    return std::min(b - a, a - b + M_PI);
-}
-
 EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 {
 	//collect points
@@ -15,9 +7,6 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 	//connect points to all adjacent ones
 	for (Node* nPointer : points) {
 		Node& n = *nPointer;
-		if (n.getLocation() == Coord(578, 473)) {
-			std::cout << "Pause";
-		}
 		//std::cout << std::endl << n.getLocation().toString();
 		for (Node* cPointer : points) {
 			Node& c = *cPointer;
@@ -32,45 +21,12 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 				}
 			}
 		}
-		//only keep 2 closest matches of travel direction to current one
-		double minDiffA = M_PI;
-		Node* pointerA = nullptr;
-		double minDiffB = M_PI;
-		Node* pointerB = nullptr;
-		for (Node* cPointer : n.getConnections()) {
-			Node& c = *cPointer;
-			Coord diff = c.getLocation() - n.getLocation();
-			double angleDiff = compareAngles(angles.GetData(n.getLocation()), std::atan((double)-diff.getY() / diff.getX()));
-			if (angleDiff < minDiffA) {
-				//shift A to B
-				pointerB = pointerA;
-				minDiffB = minDiffA;
-				//make A new lowest diff
-				pointerA = cPointer;
-				minDiffA = angleDiff;
-			}
-			else if (angleDiff < minDiffB) {
-				//make B new second lowest diff
-				pointerB = cPointer;
-				minDiffB = angleDiff;
-			}
-		}
-		for (Node* cPointer : n.getConnections()) {
-			if (cPointer != pointerA && cPointer != pointerB) {
-				if (n.getLocation() == Coord(578, 473)) {
-					std::cout << n.Disconnect(cPointer);
-				}
-				else {
-					n.Disconnect(cPointer);
-				}
-				
-			}
-		}
-		if (n.getLocation() == Coord(578, 473)) {
-			std::cout << "End";
-		}
+		n.setBestNeighbors();
+		//reset image pixels
+		edges.WriteData(n.getLocation(), 1);
 	}
-
+	TrimStem(*points[0], edges);
+	Order();
 
 	double avgX = 0;
 	double avgY = 0;
@@ -119,6 +75,11 @@ std::vector<Node*> EdgeGroup::getPoints()
 	return points;
 }
 
+std::vector<Coord> EdgeGroup::getFinalPoints()
+{
+    return finalPoints;
+}
+
 Node* EdgeGroup::getNode(int x, int y)
 {
 	for (Node* n : points) {
@@ -130,7 +91,7 @@ Node* EdgeGroup::getNode(int x, int y)
 Node* EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 {
 	
-	Node* current = new Node(Coord(x, y));
+	Node* current = new Node(Coord(x, y), angles.GetData(Coord(x, y)));
 	//set current pixel to "used" value, unable to be revisited
 	edges.WriteData(x, y, 0.5);
 
@@ -153,18 +114,85 @@ Node* EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 	return current;
 }
 
-void EdgeGroup::Order()
+void EdgeGroup::TrimNodes(Node& n)
 {
-	Coord start((*points[0]).getLocation());
-	for (Node* n : points) {
-		Coord c = (*n).getLocation();
-		if (c.getY() < start.getY()) {
-			start = Coord(c);
+	while (n.getNeighbors() > 2) {
+		//disconnect worst ones
+		int worstNeighbors = 8;
+		double worstDiff = 0;
+		Node* worstPointer = nullptr;
+
+		for (Node* cPointer : n.getConnections()) {
+			Node& c = *cPointer;
+			if (c.getBestNeighbors() < worstNeighbors) {
+				worstPointer = cPointer;
+				worstNeighbors = c.getBestNeighbors();
+				worstDiff = compareAngles(n.getAngle(), c.getAngle());
+			}
+			else if (c.getBestNeighbors() == worstNeighbors) {
+				double cAngleDiff = compareAngles(n.getAngle(), c.getAngle());
+				if (cAngleDiff > worstDiff) {
+					worstPointer = cPointer;
+					worstDiff = cAngleDiff;
+				}
+			}
 		}
-		else if (c.getY() == start.getY() && c.getX() < start.getX()) {
-			start = Coord(c);
+		n.Disconnect(worstPointer);
+		(*worstPointer).Disconnect(&n);
+	}
+}
+
+void EdgeGroup::TrimStem(Node& n, ImageData& edges)
+{
+	TrimNodes(n);
+	edges.WriteData(n.getLocation(), 0.5);
+	if (n.getConnections().size() >= 1) {
+		Node& con = *(n.getConnections()[0]);
+		if (edges.GetData(con.getLocation()) == 1) {
+			TrimStem(con, edges);
 		}
 	}
+	if (n.getConnections().size() >= 2) {
+		Node& con = *(n.getConnections()[1]);
+		if (edges.GetData(con.getLocation()) == 1) {
+			TrimStem(con, edges);
+		}
+	}
+}
 
+void EdgeGroup::Order()
+{
+	if (points.size() <= 2) {
+		//finalPoints.push_back()
+	}
+	Node& current = *points[0];
+	Coord lastPos(-1, -1);
+	//keep searching for end node
+	while (current.getNeighbors() > 1) {
+		Node& next = *current.getConnections()[0];
+		if (next.getLocation() == lastPos) {
+			next = *current.getConnections()[1];
+		}
+		lastPos = current.getLocation();
+		current = next;
+	}
 
+	//end node located, put nodes into final ordering
+	//add first and second point
+	finalPoints.push_back(current.getLocation());
+	if (points.size() < 2) {
+		return;
+	}
+	current = *current.getConnections()[0];
+
+	while (current.getNeighbors() > 1) {
+		Node& next = *current.getConnections()[0];
+		if (next.getLocation() == lastPos) {
+			next = *current.getConnections()[1];
+		}
+		lastPos = current.getLocation();
+		finalPoints.push_back(current.getLocation());
+		current = next;
+	}
+	finalPoints.push_back(current.getLocation());
 }

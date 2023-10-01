@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "mai.ppm";
+	string filename = "wagon.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -108,7 +108,7 @@ int main()
 
 	ImageData thresholded(width, height);
 
-	Canny::Threshold(laplacian, slopeMagnitudes, 0.000, 0.00, thresholded);
+	Canny::Threshold(laplacian, slopeMagnitudes, 0.01, 0.05, thresholded);
 
 	//ImageData thresholded contains all pixels that are part of an edge
 
@@ -136,8 +136,8 @@ int main()
 		//double color = M_PI * (edgeGroups.end() - g) / edgeGroups.size();
 		double color = (group.getSize() % 360) / 360.0 * M_PI;
 		double sat = 1 - group.getVariation() * M_2_PI;
-		for (Node* n : group.getPoints()) {
-			Coord c = (*n).getLocation();
+		int index = 0;
+		for (Coord c : group.getFinalPoints()) {
 
 			//(*n).printData();
 
@@ -146,8 +146,8 @@ int main()
 			slopeMagnitudes.WriteData(c, 1);
 
 			slopeDirections.WriteData(c, color);
-			slopeDirections.WriteData(c, 0.125 * M_PI * (*n).getNeighbors());
-			
+			slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());
+			index ++;
 		}
 		
 	}

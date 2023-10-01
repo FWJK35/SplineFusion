@@ -8,11 +8,11 @@ class EdgeGroup
 {
 private:
 	std::vector<Node*> points;
+	std::vector<Coord> finalPoints;
 	double avgDirection;
 	double variation;
 
 public:
-	static double compareAngles(double, double);
 
 	EdgeGroup(int, int, ImageData&, ImageData&);
 
@@ -21,9 +21,12 @@ public:
 	double getAvgDirection();
 	double getVariation();
 	std::vector<Node*> getPoints();
+	std::vector<Coord> getFinalPoints();
 	Node* getNode(int, int);
 	
 	Node* StemFrom(int, int, ImageData&, ImageData&);
+	void TrimNodes(Node&);
+	void TrimStem(Node&, ImageData&);
 	void Order();
 };
 
