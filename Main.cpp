@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "wagon.ppm";
+	string filename = "iron.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -109,7 +109,6 @@ int main()
 	ImageData thresholded(width, height);
 
 	Canny::Threshold(laplacian, slopeMagnitudes, 0.01, 0.05, thresholded);
-
 	//ImageData thresholded contains all pixels that are part of an edge
 
 	cout << "Finding Edge Groups" << endl;
@@ -117,52 +116,70 @@ int main()
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
 			if (thresholded.GetData(x, y) == 1) {
+
 				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
 				//cout << (*group).getSize() << " ";
+				//cout << Coord(x, y).toString() << endl;
+				
 				edgeGroups.push_back(group);
 			}
 		}
 	}
-	cout << edgeGroups.size() << endl;
+	//cout << edgeGroups.size() << endl;
 	for (EdgeGroup* g : edgeGroups) {
-		
+
 	}
-
-
+	for (int y = 0; y < height; y++) {
+		for (int x = 0; x < width; x++) {
+			slopeMagnitudes.WriteData(x, y, 1);
+		}
+	}
 	//color pixels by edgegroup data
 	for (EdgeGroup* g : edgeGroups) {
 		EdgeGroup group = *g;
 		//double color = (std::rand() % 360) / 360.0 * M_PI;
 		//double color = M_PI * (edgeGroups.end() - g) / edgeGroups.size();
 		double color = (group.getSize() % 360) / 360.0 * M_PI;
-		double sat = 1 - group.getVariation() * M_2_PI;
+		//double sat = 1 - group.getVariation() * M_2_PI;
 		int index = 0;
+		for (Node* n : group.getPoints()) {
+
+			//(*n).printData();
+			Coord c = (*n).getLocation();
+
+			thresholded.WriteData(c, 1);
+
+			slopeMagnitudes.AddValue(c, -0.1);
+
+			slopeDirections.WriteData(c, color);
+			//slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());
+			index++;
+		}
 		for (Coord c : group.getFinalPoints()) {
 
 			//(*n).printData();
+			//Coord c = (*n).getLocation();
 
-			thresholded.WriteData(c, sat);
+			thresholded.WriteData(c, 1);
 
-			slopeMagnitudes.WriteData(c, 1);
+			slopeMagnitudes.AddValue(c, -0.1);
 
 			slopeDirections.WriteData(c, color);
-			slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());
+			//slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());
 			index ++;
 		}
 		
 	}
-	
 
 	//converts data to pixel data
 	double max = 0;
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
-
+			
 
 			double hue = slopeDirections.GetData(x, y) * M_1_PI * 360;
 			double sat = slopeMagnitudes.GetData(x, y);
 			double val = thresholded.GetData(x, y);
-
 
 			double threshold = 0.02;
 			//double val = sqrt(slopeMagnitudes.GetData(x, y) / (1 - threshold) - threshold);

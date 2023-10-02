@@ -96,6 +96,8 @@ PrecisePixel PrecisePixel::fromRGB(PrecisePixel p)
 
 PrecisePixel PrecisePixel::fromHSV(double hue, double sat, double val)
 {
+	while (hue >= 360) hue -= 360;
+	while (hue < 0) hue += 360;
 	double M = 255 * val;
 	double m = M * (1 - sat);
 	double z = (M - m) * (1 - std::abs(std::fmod(hue / 60, 2) - 1));

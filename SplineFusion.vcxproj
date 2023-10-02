@@ -124,6 +124,7 @@
     <ClCompile Include="Coord.cpp" />
     <ClCompile Include="DXFWriter.cpp" />
     <ClCompile Include="EdgeGroup.cpp" />
+    <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="Image.cpp" />
     <ClCompile Include="ImageData.cpp" />
     <ClCompile Include="Kernel.cpp" />
@@ -143,6 +144,7 @@
     <ClInclude Include="DXFWriter.h" />
     <ClInclude Include="EdgeGroup.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="Helpers.h" />
     <ClInclude Include="Image.h" />
     <ClInclude Include="ImageData.h" />
     <ClInclude Include="Kernel.h" />

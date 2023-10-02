@@ -17,8 +17,11 @@ public:
 	Node(Coord, double);
 	void Connect(Node*);
 	void Disconnect(Node*);
+	void Kill();
 	void addBestNeighbor();
+	void addBestNeighbor(int);
 	void setBestNeighbors();
+	~Node();
 
 	Coord getLocation();
     double getAngle();

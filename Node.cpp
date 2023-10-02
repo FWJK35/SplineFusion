@@ -17,7 +17,9 @@ void Node::Connect(Node* n)
 	for (Node* t : connections) {
 		if ((*t).location == (*n).location) exists = true;
 	}
-	if (!exists && !(location == (*n).location)) connections.push_back(n);
+	if (!exists && !(location == (*n).location)) {
+		connections.push_back(n);
+	}
 }
 
 void Node::Disconnect(Node* n)
@@ -32,13 +34,28 @@ void Node::Disconnect(Node* n)
 	}
 }
 
+void Node::Kill()
+{
+	for (Node* cPointer : connections) {
+		(*cPointer).Disconnect(this);
+	}
+}
+
 void Node::addBestNeighbor()
 {
 	bestNeighbors++;
 }
 
+void Node::addBestNeighbor(int i)
+{
+	bestNeighbors += i;
+}
+
 void Node::setBestNeighbors()
 {
+	if (location == Coord(421, 23)) {
+		int a = 0;
+	}
 	double minDiffA = M_PI;
 	Node* pointerA = nullptr;
 	double minDiffB = M_PI;
@@ -47,7 +64,7 @@ void Node::setBestNeighbors()
 		Node& c = *cPointer;
 		Coord diff = c.getLocation() - location;
 		//double angleDiff = compareAngles(0, 0);
-		double angleDiff = compareAngles(myAngle, std::atan((double)-diff.getY() / diff.getX()));
+		double angleDiff = compareAngles(c.getAngle(), std::atan((double)-diff.getY() / diff.getX()));
 		if (angleDiff < minDiffA) {
 			//shift A to B
 			pointerB = pointerA;
@@ -68,6 +85,12 @@ void Node::setBestNeighbors()
 	if (pointerB != nullptr) {
 		(*pointerB).addBestNeighbor();
 	}
+}
+
+Node::~Node()
+{
+	connections.clear();
+	connections.~vector();
 }
 
 Coord Node::getLocation()
