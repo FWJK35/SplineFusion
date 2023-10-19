@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "iron.ppm";
+	string filename = "mai.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -118,9 +118,6 @@ int main()
 			if (thresholded.GetData(x, y) == 1) {
 
 				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
-				//cout << (*group).getSize() << " ";
-				//cout << Coord(x, y).toString() << endl;
-				
 				edgeGroups.push_back(group);
 			}
 		}
@@ -142,26 +139,13 @@ int main()
 		double color = (group.getSize() % 360) / 360.0 * M_PI;
 		//double sat = 1 - group.getVariation() * M_2_PI;
 		int index = 0;
-		for (Node* n : group.getPoints()) {
-
-			//(*n).printData();
-			Coord c = (*n).getLocation();
-
-			thresholded.WriteData(c, 1);
-
-			slopeMagnitudes.AddValue(c, -0.1);
-
-			slopeDirections.WriteData(c, color);
-			//slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());
-			index++;
-		}
 		for (Coord c : group.getFinalPoints()) {
 
 			//(*n).printData();
 			//Coord c = (*n).getLocation();
 
 			thresholded.WriteData(c, 1);
-
+			if (slopeMagnitudes.GetData(c) < 1)
 			slopeMagnitudes.AddValue(c, -0.1);
 
 			slopeDirections.WriteData(c, color);

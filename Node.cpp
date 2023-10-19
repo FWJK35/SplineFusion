@@ -90,7 +90,7 @@ void Node::setBestNeighbors()
 Node::~Node()
 {
 	connections.clear();
-	connections.~vector();
+	connections.shrink_to_fit();
 }
 
 Coord Node::getLocation()

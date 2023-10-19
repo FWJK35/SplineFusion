@@ -30,6 +30,7 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 		(*nPointer).setBestNeighbors();
 	}
 	TrimStem(*points[0], edges);
+	isCyclic = false;
 	Order();
 	//free memory of nodes
 	for (Node* n : points) {
@@ -104,28 +105,51 @@ Node* EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 
 void EdgeGroup::TrimNodes(Node& n)
 {
-	while (n.getNeighbors() > 2) {
-		//disconnect worst ones
-		int worstNeighbors = 8;
-		double worstDiff = 0;
-		Node* worstPointer = nullptr;
-
-		for (Node* cPointer : n.getConnections()) {
-			Node& c = *cPointer;
-			if (c.getBestNeighbors() < worstNeighbors) {
-				worstPointer = cPointer;
-				worstNeighbors = c.getBestNeighbors();
-				worstDiff = compareAngles(n.getAngle(), c.getAngle());
+	int bestNeighbors1 = 0;
+	double bestDiff1 = M_PI;
+	Node* bestPointer1 = nullptr;
+	int bestNeighbors2 = 0;
+	double bestDiff2 = M_PI;
+	Node* bestPointer2 = nullptr;
+	for (Node* cPointer : n.getConnections()) {
+		Node& c = *cPointer;
+		Coord diff = c.getLocation() - n.getLocation();
+		//determine left or right side
+		if (compareFullAngles(fastAtan(diff.getX(), diff.getY()), n.getAngle()) <= M_PI_2) {
+			//right side
+			if (c.getBestNeighbors() > bestNeighbors1) {
+				bestPointer1 = cPointer;
+				bestNeighbors1 = c.getBestNeighbors();
+				bestDiff1 = compareAngles(n.getAngle(), c.getAngle());
 			}
-			else if (c.getBestNeighbors() == worstNeighbors) {
+			else if (c.getBestNeighbors() == bestNeighbors1) {
 				double cAngleDiff = compareAngles(n.getAngle(), c.getAngle());
-				if (cAngleDiff > worstDiff) {
-					worstPointer = cPointer;
-					worstDiff = cAngleDiff;
+				if (cAngleDiff < bestDiff1) {
+					bestPointer1 = cPointer;
+					bestDiff1 = cAngleDiff;
 				}
 			}
 		}
-		(*worstPointer).Kill();
+		else {
+			//left side
+			if (c.getBestNeighbors() > bestNeighbors2) {
+				bestPointer2 = cPointer;
+				bestNeighbors2 = c.getBestNeighbors();
+				bestDiff2 = compareAngles(n.getAngle(), c.getAngle());
+			}
+			else if (c.getBestNeighbors() == bestNeighbors2) {
+				double cAngleDiff = compareAngles(n.getAngle(), c.getAngle());
+				if (cAngleDiff < bestDiff2) {
+					bestPointer2 = cPointer;
+					bestDiff2 = cAngleDiff;
+				}
+			}
+		}
+	}
+	for (Node* cPointer : n.getConnections()) {
+		if (cPointer != bestPointer1 && cPointer != bestPointer2) {
+			(*cPointer).Kill();
+		}
 	}
 }
 
@@ -134,6 +158,7 @@ void EdgeGroup::TrimStem(Node& n, ImageData& edges)
 	if (n.getLocation() == Coord(174, 41)) {
 		int a = 0;
 	}
+	//std::cout << n.getLocation().toString();
 	TrimNodes(n);
 	edges.WriteData(n.getLocation(), 0.5);
 	//make self immune to trimming
@@ -162,34 +187,45 @@ void EdgeGroup::Order()
 		return;
 	}
 	Node current = *points[0];
+	Node next = current;
 	Coord lastPos = current.getLocation();
 	current = *(current.getConnections()[0]);
 	//keep searching for end node
+	std::cout << "searching for start...\n";
+	current.printData();
 	while (current.getNeighbors() > 1) {
-		Node next = *(current.getConnections()[0]);
+		next = *(current.getConnections()[0]);
 		if (next.getLocation() == lastPos) {
 			next = *(current.getConnections()[1]);
+		}
+		if (next.getLocation() == (*points[0]).getLocation()) {
+			current = next;
+			break;
 		}
 		lastPos = current.getLocation();
 		current = next;
-		int a = 0;
 	}
-	
+	std::cout << "starting point: ";
+	current.printData();
 	//end node located, put nodes into final ordering
-	//add first and second point
+	//add first point
 	finalPoints.push_back(current.getLocation());
-	if (points.size() < 2) {
-		return;
-	}
-	current = *current.getConnections()[0];
+	slopes.push_back(current.getAngle());
+	lastPos = current.getLocation();
+	current = *(current.getConnections()[0]);
 
 	while (current.getNeighbors() > 1) {
-		Node next = *(current.getConnections()[0]);
+		next = *(current.getConnections()[0]);
 		if (next.getLocation() == lastPos) {
 			next = *(current.getConnections()[1]);
 		}
+		if (next.getLocation() == finalPoints[0]) {
+			isCyclic = true;
+			break;
+		}
 		lastPos = current.getLocation();
 		finalPoints.push_back(current.getLocation());
+		slopes.push_back(current.getAngle());
 		current = next;
 	}
 	finalPoints.push_back(current.getLocation());

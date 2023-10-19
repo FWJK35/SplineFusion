@@ -9,8 +9,11 @@ class EdgeGroup
 private:
 	std::vector<Node*> points;
 	std::vector<Coord> finalPoints;
+	std::vector<double> slopes;
+	std::vector<double> slopeDerivatives;
 	double avgDirection;
 	double variation;
+	bool isCyclic;
 
 public:
 
