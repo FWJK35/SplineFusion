@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "mai.ppm";
+	string filename = "firefly.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -122,15 +122,6 @@ int main()
 			}
 		}
 	}
-	//cout << edgeGroups.size() << endl;
-	for (EdgeGroup* g : edgeGroups) {
-
-	}
-	for (int y = 0; y < height; y++) {
-		for (int x = 0; x < width; x++) {
-			slopeMagnitudes.WriteData(x, y, 1);
-		}
-	}
 	//color pixels by edgegroup data
 	for (EdgeGroup* g : edgeGroups) {
 		EdgeGroup group = *g;
@@ -139,14 +130,15 @@ int main()
 		double color = (group.getSize() % 360) / 360.0 * M_PI;
 		//double sat = 1 - group.getVariation() * M_2_PI;
 		int index = 0;
-		for (Coord c : group.getFinalPoints()) {
+		for (int i = 0; i < group.getSize(); i++) {
 
 			//(*n).printData();
-			//Coord c = (*n).getLocation();
+			Coord c = group.getFinalPoints()[i];
 
 			thresholded.WriteData(c, 1);
-			if (slopeMagnitudes.GetData(c) < 1)
-			slopeMagnitudes.AddValue(c, -0.1);
+			slopeMagnitudes.WriteData(c, 1 - group.getSlopeDerivatives()[i] / M_PI_2);
+			if (group.getSize() <= 2)
+				thresholded.WriteData(c, 0);
 
 			slopeDirections.WriteData(c, color);
 			//slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());

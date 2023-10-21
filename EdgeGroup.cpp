@@ -29,13 +29,21 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 	for (Node* nPointer : points) {
 		(*nPointer).setBestNeighbors();
 	}
+	//limit nodes to have max of 2 neighbors, one in each direction
 	TrimStem(*points[0], edges);
 	isCyclic = false;
+	//place nodes in order, starting from one end, or starting node if cyclic
 	Order();
+	CalculateSlopeDerivatives();
 	//free memory of nodes
 	for (Node* n : points) {
 		//delete(n);
 	}
+}
+
+EdgeGroup::EdgeGroup()
+{
+	isCyclic = false;
 }
 
 void EdgeGroup::printData()
@@ -48,17 +56,7 @@ void EdgeGroup::printData()
 
 int EdgeGroup::getSize()
 {
-	return points.size();
-}
-
-double EdgeGroup::getAvgDirection()
-{
-	return avgDirection;
-}
-
-double EdgeGroup::getVariation()
-{
-	return variation;
+	return finalPoints.size();
 }
 
 std::vector<Node*> EdgeGroup::getPoints()
@@ -71,6 +69,16 @@ std::vector<Coord> EdgeGroup::getFinalPoints()
     return finalPoints;
 }
 
+std::vector<double> EdgeGroup::getSlopes()
+{
+	return slopes;
+}
+
+std::vector<double> EdgeGroup::getSlopeDerivatives()
+{
+	return slopeDerivatives;
+}
+
 Node* EdgeGroup::getNode(int x, int y)
 {
 	for (Node* n : points) {
@@ -79,7 +87,13 @@ Node* EdgeGroup::getNode(int x, int y)
 	return nullptr;
 }
 
-Node* EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
+void EdgeGroup::addPoint(int x, int y, double angle)
+{
+	finalPoints.push_back(Coord(x, y));
+	slopes.push_back(angle);
+}
+
+void EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 {
 	Node* current = new Node(Coord(x, y), angles.GetData(Coord(x, y)));
 	points.push_back(current);
@@ -100,7 +114,6 @@ Node* EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 			}
 		}
 	}
-	return current;
 }
 
 void EdgeGroup::TrimNodes(Node& n)
@@ -155,10 +168,6 @@ void EdgeGroup::TrimNodes(Node& n)
 
 void EdgeGroup::TrimStem(Node& n, ImageData& edges)
 {
-	if (n.getLocation() == Coord(174, 41)) {
-		int a = 0;
-	}
-	//std::cout << n.getLocation().toString();
 	TrimNodes(n);
 	edges.WriteData(n.getLocation(), 0.5);
 	//make self immune to trimming
@@ -181,8 +190,10 @@ void EdgeGroup::Order()
 {
 	if (points.size() <= 2) {
 		finalPoints.push_back((*points[0]).getLocation());
+		slopes.push_back((*points[0]).getAngle());
 		if (points.size() == 2) {
 			finalPoints.push_back((*points[1]).getLocation());
+			slopes.push_back((*points[1]).getAngle());
 		}
 		return;
 	}
@@ -229,4 +240,23 @@ void EdgeGroup::Order()
 		current = next;
 	}
 	finalPoints.push_back(current.getLocation());
+	slopes.push_back(current.getAngle());
+}
+
+void EdgeGroup::CalculateSlopeDerivatives()
+{
+	slopeDerivatives.push_back(0);
+	for (int i = 1; i < slopes.size() - 1; i++) {
+		double thisSlopeDerivative = compareAngles(slopes[i + 1], slopes[i - 1]) / 2;
+		slopeDerivatives.push_back(thisSlopeDerivative);
+	}
+	slopeDerivatives.push_back(0);
+}
+
+int EdgeGroup::GetSplitLocation()
+{
+	for (int i = 0; i < slopes.size(); i++) {
+
+	}
+	return -1;
 }
