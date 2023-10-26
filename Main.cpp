@@ -119,9 +119,19 @@ int main()
 
 				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
 				edgeGroups.push_back(group);
+				while ((*group).GetSplitLocation() >= 0) {
+					if (!(*group).getCyclic()) {
+						edgeGroups.push_back((*group).Split((*group).GetSplitLocation()));
+					}
+					else
+					{
+						(*group).Split((*group).GetSplitLocation());
+					}
+				}
 			}
 		}
 	}
+	edgeGroups.push_back((*edgeGroups[0]).Split(10));
 	//color pixels by edgegroup data
 	for (EdgeGroup* g : edgeGroups) {
 		EdgeGroup group = *g;

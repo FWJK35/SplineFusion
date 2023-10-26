@@ -7,7 +7,6 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 	//connect points to all adjacent ones
 	for (Node* nPointer : points) {
 		Node& n = *nPointer;
-		//std::cout << std::endl << n.getLocation().toString();
 		for (Node* cPointer : points) {
 			Node& c = *cPointer;
 			Coord diff = c.getLocation() - n.getLocation();
@@ -43,6 +42,7 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 
 EdgeGroup::EdgeGroup()
 {
+	size = 0;
 	isCyclic = false;
 }
 
@@ -57,6 +57,11 @@ void EdgeGroup::printData()
 int EdgeGroup::getSize()
 {
 	return finalPoints.size();
+}
+
+bool EdgeGroup::getCyclic()
+{
+	return isCyclic;
 }
 
 std::vector<Node*> EdgeGroup::getPoints()
@@ -87,10 +92,11 @@ Node* EdgeGroup::getNode(int x, int y)
 	return nullptr;
 }
 
-void EdgeGroup::addPoint(int x, int y, double angle)
+void EdgeGroup::addPoint(Coord c, double angle)
 {
-	finalPoints.push_back(Coord(x, y));
+	finalPoints.push_back(c);
 	slopes.push_back(angle);
+	size++;
 }
 
 void EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
@@ -202,8 +208,6 @@ void EdgeGroup::Order()
 	Coord lastPos = current.getLocation();
 	current = *(current.getConnections()[0]);
 	//keep searching for end node
-	std::cout << "searching for start...\n";
-	current.printData();
 	while (current.getNeighbors() > 1) {
 		next = *(current.getConnections()[0]);
 		if (next.getLocation() == lastPos) {
@@ -216,8 +220,6 @@ void EdgeGroup::Order()
 		lastPos = current.getLocation();
 		current = next;
 	}
-	std::cout << "starting point: ";
-	current.printData();
 	//end node located, put nodes into final ordering
 	//add first point
 	finalPoints.push_back(current.getLocation());
@@ -241,22 +243,62 @@ void EdgeGroup::Order()
 	}
 	finalPoints.push_back(current.getLocation());
 	slopes.push_back(current.getAngle());
+	size = finalPoints.size();
 }
 
 void EdgeGroup::CalculateSlopeDerivatives()
 {
-	slopeDerivatives.push_back(0);
+	slopeDerivatives.clear();
+	slopeDerivatives.push_back(M_PI_2);
 	for (int i = 1; i < slopes.size() - 1; i++) {
 		double thisSlopeDerivative = compareAngles(slopes[i + 1], slopes[i - 1]) / 2;
 		slopeDerivatives.push_back(thisSlopeDerivative);
 	}
-	slopeDerivatives.push_back(0);
+	if (isCyclic) {
+		double thisSlopeDerivative = compareAngles(slopes[slopes.size() - 1], slopes[0]) / 2;
+		slopeDerivatives.push_back(thisSlopeDerivative);
+	}
+	else {
+		slopeDerivatives.push_back(M_PI_2);
+	}
+	
 }
 
 int EdgeGroup::GetSplitLocation()
 {
-	for (int i = 0; i < slopes.size(); i++) {
-
+	for (int i = 1; i < slopes.size() - 1; i++) {
+		if (slopeDerivatives[i] > M_PI_2 * 0.2) {
+			return i;
+		}
 	}
 	return -1;
+}
+
+EdgeGroup* EdgeGroup::Split(int splitLocation)
+{
+	EdgeGroup* other = new EdgeGroup();
+	if (isCyclic) {
+		isCyclic = false;
+		for (int i = 0; i < splitLocation; i++) {
+			for (int s = 0; s < size; s++) {
+				finalPoints.push_back(*finalPoints.erase(finalPoints.begin()));
+				slopes.push_back(*slopes.erase(slopes.begin()));
+			}
+		}
+		CalculateSlopeDerivatives();
+		return nullptr;
+	}
+	auto pointsItr = finalPoints.begin();
+	auto slopesItr = slopes.begin();
+	//pointsItr += splitLocation;
+	//slopesItr += splitLocation;
+	for (int i = 0; i < splitLocation; i++) {
+		(*other).addPoint(finalPoints[0], slopes[0]);
+		pointsItr = finalPoints.erase(pointsItr);
+		slopesItr = slopes.erase(slopesItr);
+	}
+	size = finalPoints.size();
+	CalculateSlopeDerivatives();
+	(*other).CalculateSlopeDerivatives();
+	return other;
 }

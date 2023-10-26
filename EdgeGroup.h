@@ -11,6 +11,7 @@ private:
 	std::vector<Coord> finalPoints;
 	std::vector<double> slopes;
 	std::vector<double> slopeDerivatives;
+	int size;
 	bool isCyclic;
 
 public:
@@ -20,12 +21,13 @@ public:
 
 	void printData();
 	int getSize();
+	bool getCyclic();
 	std::vector<Node*> getPoints();
 	std::vector<Coord> getFinalPoints();
 	std::vector<double> getSlopes();
 	std::vector<double> getSlopeDerivatives();
 	Node* getNode(int, int);
-	void addPoint(int, int, double);
+	void addPoint(Coord, double);
 	
 	void StemFrom(int, int, ImageData&, ImageData&);
 	void TrimNodes(Node&);
@@ -33,5 +35,6 @@ public:
 	void Order();
 	void CalculateSlopeDerivatives();
 	int GetSplitLocation();
+	EdgeGroup* Split(int);
 };
 
