@@ -8,9 +8,11 @@ class EdgeGroup
 {
 private:
 	std::vector<Node*> points;
-	std::vector<Coord> finalPoints;
+	std::vector<Coord> coords;
 	std::vector<double> slopes;
+	std::vector<double> calculatedSlopes;
 	std::vector<double> slopeDerivatives;
+	std::vector<double> slope2ndDerivatives;
 	int size;
 	bool isCyclic;
 
@@ -25,7 +27,9 @@ public:
 	std::vector<Node*> getPoints();
 	std::vector<Coord> getFinalPoints();
 	std::vector<double> getSlopes();
+	std::vector<double> getCalculatedSlopes();
 	std::vector<double> getSlopeDerivatives();
+	std::vector<double> getSlope2ndDerivatives();
 	Node* getNode(int, int);
 	void addPoint(Coord, double);
 	
@@ -33,7 +37,7 @@ public:
 	void TrimNodes(Node&);
 	void TrimStem(Node&, ImageData&);
 	void Order();
-	void CalculateSlopeDerivatives();
+	void CalculateSlopeData();
 	int GetSplitLocation();
 	EdgeGroup* Split(int);
 };

@@ -131,7 +131,7 @@ int main()
 			}
 		}
 	}
-	edgeGroups.push_back((*edgeGroups[0]).Split(10));
+	//edgeGroups.push_back((*edgeGroups[0]).Split(10));
 	//color pixels by edgegroup data
 	for (EdgeGroup* g : edgeGroups) {
 		EdgeGroup group = *g;
@@ -145,12 +145,17 @@ int main()
 			//(*n).printData();
 			Coord c = group.getFinalPoints()[i];
 
-			thresholded.WriteData(c, 1);
-			slopeMagnitudes.WriteData(c, 1 - group.getSlopeDerivatives()[i] / M_PI_2);
+			if (group.getSize() > 1) {
+				thresholded.WriteData(c, 1);
+				//slopeMagnitudes.WriteData(c, 0.5 - group.getSlopeDerivatives()[i] / M_PI_2);
+				slopeMagnitudes.WriteData(c, 1);
+				slopeDirections.WriteData(c, group.getCalculatedSlopes()[i]);
+			}
+			
 			if (group.getSize() <= 2)
 				thresholded.WriteData(c, 0);
-
-			slopeDirections.WriteData(c, color);
+			
+			//slopeDirections.WriteData(c, M_PI_2 - group.getSlopeDerivatives()[i] * 3);
 			//slopeDirections.WriteData(c, M_PI * index / group.getFinalPoints().size());
 			index ++;
 		}

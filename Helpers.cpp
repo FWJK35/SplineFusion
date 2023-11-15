@@ -8,6 +8,14 @@ double compareAngles(double a, double b)
     return std::min(b - a, a - b + M_PI);
 }
 
+double compareSignedAngles(double a, double b)
+{
+    double temp = b - a;
+    if (temp > M_PI_2) temp -= M_PI;
+    if (temp < -M_PI_2) temp += M_PI;
+    return temp;
+}
+
 double compareFullAngles(double a, double b)
 {
     double temp = std::min(a, b);
@@ -65,4 +73,8 @@ double fastAtan(int x, int y) {
         default:
         throw error;
     }
+}
+
+double coordAtan(Coord c) {
+    return atan((double) c.getY() / c.getX());
 }
