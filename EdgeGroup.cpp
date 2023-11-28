@@ -271,37 +271,41 @@ void EdgeGroup::CalculateSlopeData()
 		slopeDerivatives.push_back(0);
 		slope2ndDerivatives.push_back(0);
 	}
-
+	for (int i = 0; i < size; i++) {
+		calculatedSlopes.push_back(slopes[i]);
+	}
 	//calculate slopes based on secant between neighboring coordinates
-	calculatedSlopes.push_back(coordAtan(coords[1] - coords[0]));
-	if (size > 2) {
-		calculatedSlopes.push_back(coordAtan(coords[2] - coords[0]));
+	//push first one
+	/*calculatedSlopes.push_back(coordAtan(coords[1] - coords[0]));
+	for (int i = 1; i < coords.size() - 1; i++) {
+		
+		double calcSlope = 0;
+		double r = 0.7;
+		int dist = std::min(i, size - i - 1);
+		for (int d = 1; d < dist; d++) {
+			calcSlope += coordAtan(coords[i + d] - coords[i - d]) * std::pow(r, d);
+		}
+		calcSlope /= (r/(1-r)) - std::pow(0.5, dist);
+		calculatedSlopes.push_back(calcSlope);
 	}
-	for (int i = 2; i < coords.size() - 2; i++) {
-		calculatedSlopes.push_back(coordAtan(coords[i + 2] - coords[i - 2]));
-	}
-	if (size > 3) {
-		calculatedSlopes.push_back(coordAtan(coords[size - 1] - coords[size - 3]));
-	}
-	calculatedSlopes.push_back(coordAtan(coords[size - 1] - coords[size - 2]));
+	calculatedSlopes.push_back(coordAtan(coords[size - 1] - coords[size - 2]));*/
 
 	//calculate slope 1st derivative based on difference between them
-	for (int i = 0; i < slopes.size() - 1; i++) {
-		double thisSlopeDerivative = compareSignedAngles(calculatedSlopes[i], calculatedSlopes[i + 1]);
+	for (int i = 0; i < size - 1; i++) {
+		double thisSlopeDerivative = compareSignedAngles(calculatedSlopes[i + 1], calculatedSlopes[i]);
 		slopeDerivatives.push_back(thisSlopeDerivative);
 	}
 	if (isCyclic) {
-		double thisSlopeDerivative = compareAngles(slopes[slopes.size() - 1], slopes[0]);
+		double thisSlopeDerivative = compareSignedAngles(slopes[slopes.size() - 1], slopes[0]);
 		slopeDerivatives.push_back(thisSlopeDerivative);
 	}
-
 	else {
-		slopeDerivatives.push_back(M_PI_2);
+		slopeDerivatives.push_back(0);
 	}
 
 	slope2ndDerivatives.push_back(0);
 	for (int i = 0; i < slopeDerivatives.size() - 1; i++) {
-		double thisSlope2ndDerivative = slopeDerivatives[i+1]-slopeDerivatives[i];
+		double thisSlope2ndDerivative = slopeDerivatives[i+1] - slopeDerivatives[i];
 		slope2ndDerivatives.push_back(thisSlope2ndDerivative);
 	}
 	slope2ndDerivatives.push_back(0);
@@ -310,12 +314,42 @@ void EdgeGroup::CalculateSlopeData()
 
 int EdgeGroup::GetSplitLocation()
 {
-	return -1;
-	if (slopes.size() < 5) return -1;
-	for (int i = 1; i < slopes.size() - 2; i++) {
-		if (abs(slopeDerivatives[i]) > M_PI_2 * 0.2) {
-			return i;
+	//return -1;
+	//min split size
+	int minSize = 4;
+	if (slopes.size() < minSize) return -1;
+	
+	std::vector<double> correlationValues;
+	//add filler correlation values;
+	if (size == 276) {
+		int a = 0;
+	}
+	correlationValues.push_back(0);
+	double maxCorrelation = 0;
+	for (int i = 1; i < size; i++) {
+		//calculate r-squared
+		double totalDistSquared = 0;
+		for (int p = 1; p < i; p++) {
+			Coord p0 = coords[p];
+			Coord p1 = coords[0];
+			Coord p2 = coords[i];
+			Coord endpointDiff = p2 - p1;
+			Coord pointDiff = p1 - p0;
+			double dist = (endpointDiff.getX() * pointDiff.getY() - pointDiff.getX() * endpointDiff.getY()) / endpointDiff.magnitude();
+			totalDistSquared += dist * dist;
 		}
+		
+		totalDistSquared /= i;
+		if (totalDistSquared > maxCorrelation) {
+			maxCorrelation = totalDistSquared;
+		}
+		correlationValues.push_back(totalDistSquared);
+		
+	}
+	calculatedSlopes.clear();
+	for (int i = 0; i < correlationValues.size(); i++) {
+		double correlation = correlationValues[i];
+		calculatedSlopes.push_back(correlation / maxCorrelation);
 	}
 	return -1;
 }

@@ -17,6 +17,7 @@ public:
 	void abs();
 
 	std::string toString();
+	double magnitude();
 
 	Coord operator+(Coord c);
 	Coord operator-(Coord c);

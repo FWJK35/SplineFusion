@@ -35,6 +35,11 @@ std::string Coord::toString()
     return out.str();
 }
 
+double Coord::magnitude()
+{
+    return std::sqrt(x*x + y*y);
+}
+
 Coord Coord::operator+(Coord c)
 {
     return Coord(x + c.x, y + c.y);

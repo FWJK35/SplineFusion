@@ -76,5 +76,7 @@ double fastAtan(int x, int y) {
 }
 
 double coordAtan(Coord c) {
-    return atan((double) c.getY() / c.getX());
+    double result = atan((double) -c.getY() / c.getX());
+    if (result < 0) result += M_PI;
+    return result;
 }

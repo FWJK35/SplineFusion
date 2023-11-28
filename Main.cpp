@@ -119,15 +119,16 @@ int main()
 
 				EdgeGroup* group = new EdgeGroup(x, y, thresholded, slopeDirections);
 				edgeGroups.push_back(group);
-				while ((*group).GetSplitLocation() >= 0) {
+				int splitLoc = (*group).GetSplitLocation();
+				while (splitLoc >= 0) {
 					if (!(*group).getCyclic()) {
-						edgeGroups.push_back((*group).Split((*group).GetSplitLocation()));
+						edgeGroups.push_back((*group).Split(splitLoc));
 					}
-					else
-					{
-						(*group).Split((*group).GetSplitLocation());
+					else {
+						(*group).Split(splitLoc);
 					}
 				}
+				
 			}
 		}
 	}
@@ -148,8 +149,12 @@ int main()
 			if (group.getSize() > 1) {
 				thresholded.WriteData(c, 1);
 				//slopeMagnitudes.WriteData(c, 0.5 - group.getSlopeDerivatives()[i] / M_PI_2);
-				slopeMagnitudes.WriteData(c, 1);
-				slopeDirections.WriteData(c, group.getCalculatedSlopes()[i]);
+				slopeMagnitudes.WriteData(c, 1 - group.getCalculatedSlopes()[i]);
+				slopeDirections.WriteData(c, color);
+				if (i == 0) {
+					slopeMagnitudes.WriteData(c, 1);
+					slopeDirections.WriteData(c, 0);
+				}
 			}
 			
 			if (group.getSize() <= 2)
