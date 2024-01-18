@@ -54,6 +54,11 @@ double Vec::getArea()
 	return std::abs(x * y);
 }
 
+double Vec::getSlope()
+{
+	return y / x;
+}
+
 Vec Vec::interpolate(Vec to, double dist)
 {
 	Vec diff = to - *this;
@@ -62,7 +67,7 @@ Vec Vec::interpolate(Vec to, double dist)
 
 Vec Vec::getMidPoint(Vec other)
 {
-	return Vec((x + other.x) / 2, (y + other.y) / 2);
+	return (*this + other) / 2;
 }
 
 double Vec::getDistance(Vec other)

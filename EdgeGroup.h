@@ -3,6 +3,7 @@
 #include "framework.h"
 #include "Node.h"
 #include "ImageData.h"
+#include "shapes.h"
 
 class EdgeGroup
 {
@@ -39,6 +40,8 @@ public:
 	void Order();
 	void CalculateSlopeData();
 	int GetSplitLocation();
+	Line GetSubLine();
+	CircleArc GetSubArc();
 	EdgeGroup* Split(int);
 };
 

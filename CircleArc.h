@@ -19,5 +19,7 @@ public:
 	CircleArc(Vec, Vec, double);
 
 	void DrawTo(Image&);
+
+	static Vec GetCenter(Vec, Vec, Vec);
 };
 

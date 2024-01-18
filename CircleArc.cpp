@@ -42,3 +42,24 @@ void CircleArc::DrawTo(Image& img)
 		angle += step;
 	}
 }
+
+Vec CircleArc::GetCenter(Vec endpoint1, Vec centerpoint, Vec endpoint2)
+{
+	if ((centerpoint - endpoint1).getSlope() == (centerpoint - endpoint2).getSlope()) {
+		throw std::invalid_argument("Points cannot be colinear");
+	}
+	Vec diff1 = centerpoint - diff1;
+	Vec diff2 = centerpoint - diff2;
+	
+	double xd1yd2 = diff1.getX() * diff2.getY(); 
+	double xd2yd1 = diff2.getX() * diff2.getY(); 
+
+	double centerX = ((diff1.getY() * diff2.getY() * (diff2.getY() - diff1.getY()) 
+					+ xd1yd2 * endpoint1.getX() - xd2yd1 * endpoint2.getX()) 
+					/ (xd1yd2 - xd2yd1) + centerpoint.getX()) * 0.5;
+	double centerY = ((diff1.getX() * diff2.getX() * (diff2.getX() - diff1.getX()) 
+					+ xd2yd1 * endpoint1.getY() - xd1yd2 * endpoint2.getY()) 
+					/ (xd2yd1 - xd1yd2) + centerpoint.getY()) * 0.5; 
+
+    return Vec(centerX, centerY);
+}

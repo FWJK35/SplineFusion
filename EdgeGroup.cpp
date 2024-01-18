@@ -312,6 +312,16 @@ void EdgeGroup::CalculateSlopeData()
 	
 }
 
+Line GetSubLine() 
+{
+	
+	return Line(0, 0, 0, 0);
+}
+
+CircleArc GetSubArc() {
+	return CircleArc(Vec(0,0), Vec(0,0),0);
+}
+
 int EdgeGroup::GetSplitLocation()
 {
 	//return -1;
@@ -321,9 +331,6 @@ int EdgeGroup::GetSplitLocation()
 	
 	std::vector<double> correlationValues;
 	//add filler correlation values;
-	if (size == 276) {
-		int a = 0;
-	}
 	correlationValues.push_back(0);
 	double maxCorrelation = 0;
 	for (int i = 1; i < size; i++) {

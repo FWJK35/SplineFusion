@@ -22,6 +22,7 @@ public:
 	std::string toString();
 
 	double getArea();
+	double getSlope();
 	Vec interpolate(Vec, double);
 	Vec getMidPoint(Vec);
 	double getDistance(Vec);
