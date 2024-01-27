@@ -1,11 +1,12 @@
 #pragma once
 #include "framework.h"
-#include "Pixel.h"
-//#include "Vec.h"
+
 
 class Image;
 class ImageData;
 class Vec;
+class Coord;
+class Pixel;
 
 class Kernel {
 private:
@@ -27,3 +28,5 @@ public:
 #include "Image.h"
 #include "ImageData.h"
 #include "Vec.h"
+#include "Coord.h"
+#include "Pixel.h"

@@ -177,15 +177,6 @@ int main()
 			double sat = slopeMagnitudes.GetData(x, y);
 			double val = thresholded.GetData(x, y);
 
-			double threshold = 0.02;
-			//double val = sqrt(slopeMagnitudes.GetData(x, y) / (1 - threshold) - threshold);
-
-
-			//double* var = Kernel::variance(Coord(x, y), slopeDirections, slopeMagnitudes);
-			//if (var[1] > 0.5) sat = 0;
-			
-			
-			//val = sat;
 			PrecisePixel gradPix = PrecisePixel::fromHSV(hue, sat, val);
 			newPixels.WriteData(x, y, gradPix.round());
 		}
@@ -214,6 +205,26 @@ int main()
 
 	image.close();
 	newImage.close();
+
+	EdgeGroup lineTesting;
+	if (true) {
+		lineTesting.addPoint(Coord(0, 0), 0);
+		lineTesting.addPoint(Coord(0, 1), 0);
+		lineTesting.addPoint(Coord(1, 2), 0);
+		lineTesting.addPoint(Coord(2, 3), 0);
+		lineTesting.addPoint(Coord(3, 3), 0);
+		lineTesting.addPoint(Coord(4, 4), 0);
+		lineTesting.addPoint(Coord(5, 4), 0);
+		lineTesting.addPoint(Coord(6, 4), 0);
+		lineTesting.addPoint(Coord(7, 4), 0);
+		lineTesting.addPoint(Coord(8, 4), 0);
+		lineTesting.addPoint(Coord(9, 4), 0);
+		lineTesting.addPoint(Coord(10, 4), 0);
+		lineTesting.addPoint(Coord(11, 3), 0);
+		lineTesting.addPoint(Coord(12, 2), 0);
+	}
+	Line output(0, 0, 0, 0);
+	lineTesting.GetSubLine(output);
 
 	return 0;
 }

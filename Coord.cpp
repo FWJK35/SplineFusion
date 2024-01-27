@@ -40,6 +40,16 @@ double Coord::magnitude()
     return std::sqrt(x*x + y*y);
 }
 
+double Coord::magnitudeSquared()
+{
+    return (x * x + y * y);
+}
+
+Vec Coord::toVec()
+{
+    return Vec(x, y);
+}
+
 Coord Coord::operator+(Coord c)
 {
     return Coord(x + c.x, y + c.y);

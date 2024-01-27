@@ -312,19 +312,87 @@ void EdgeGroup::CalculateSlopeData()
 	
 }
 
-Line GetSubLine() 
+int EdgeGroup::GetSubLine(Line& output) 
 {
-	
-	return Line(0, 0, 0, 0);
+	int minSize = 5;
+	int startIndex = 0;
+	bool startFound = false;
+
+	//find first possible line of minimum size
+	while (startIndex <= size - minSize) {
+		double totalDist = 0;
+		Coord ep1 = coords[startIndex];
+		Coord ep2 = coords[startIndex + minSize];
+		Coord endpointDiff = ep2 - ep1;
+		//calculate how good of a fit the first minSize points are
+		for (int p = 1; p < minSize - 1; p++) {
+			Coord p0 = coords[startIndex + p];
+			Coord pointDiff = ep1 - p0;
+			//distance of that point from the line
+			double dist = std::abs(endpointDiff.getX() * pointDiff.getY() - pointDiff.getX() * endpointDiff.getY()) / endpointDiff.magnitude();
+			totalDist += dist;
+		}
+		//if that line is close enough
+		if (totalDist / (minSize-2) < 0.5) {
+			startFound = true;
+			break;
+		}
+		startIndex++;
+	}
+	if (!startFound) {
+		return -1;
+	}
+
+	//find the endpoint where the correlation gets too poor
+	int endIndex = startIndex + minSize - 2;
+	//note: lower correlation values = more accurate
+	std::vector<double> correlationValues;
+
+	while (endIndex < size) {
+		double totalDist = 0;
+		Coord ep1 = coords[startIndex];
+		Coord ep2 = coords[endIndex];
+		Coord endpointDiff = ep2 - ep1;
+		double endpointDiffMagInverse = 1 / endpointDiff.magnitude();
+		for (int p = startIndex + 1; p < endIndex; p++) {
+			Coord p0 = coords[p];
+			Coord pointDiff = ep1 - p0;
+			//distance of that point from the line
+			double dist = std::abs(endpointDiff.getX() * pointDiff.getY() - pointDiff.getX() * endpointDiff.getY()) * endpointDiffMagInverse;
+			totalDist += dist;
+		}
+		double avgDist = totalDist / (endIndex - startIndex + 1);
+		correlationValues.push_back(avgDist);
+		if (avgDist > 0.5) {
+			break;
+		}
+		endIndex++;
+	}
+
+	//find where the line actually stopped
+	//correlation is higher / negative change
+	while (endIndex >= startIndex + minSize - 1) {
+		if (correlationValues[endIndex - startIndex - minSize + 2] -
+			correlationValues[endIndex - startIndex - minSize + 1] < 0 ||
+			correlationValues[endIndex - startIndex - minSize + 2] < 0.25) {
+			break;
+		}
+		endIndex--;
+	}
+
+	Line result(coords[startIndex].toVec(), coords[endIndex].toVec());
+	output = result;
+
+	return 0;
 }
 
-CircleArc GetSubArc() {
-	return CircleArc(Vec(0,0), Vec(0,0),0);
+int EdgeGroup::GetSubArc(CircleArc& output) {
+	return 0;
 }
 
 int EdgeGroup::GetSplitLocation()
 {
-	//return -1;
+	return -1;
 	//min split size
 	int minSize = 4;
 	if (slopes.size() < minSize) return -1;

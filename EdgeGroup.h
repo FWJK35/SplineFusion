@@ -40,8 +40,8 @@ public:
 	void Order();
 	void CalculateSlopeData();
 	int GetSplitLocation();
-	Line GetSubLine();
-	CircleArc GetSubArc();
+	int GetSubLine(Line&);
+	int GetSubArc(CircleArc&);
 	EdgeGroup* Split(int);
 };
 

@@ -1,8 +1,9 @@
 #pragma once
 
 #include "framework.h"
-#include "Image.h"
-#include "Coord.h"
+
+class Image;
+class Coord;
 
 class Vec
 {
@@ -38,3 +39,6 @@ public:
 	void operator+=(Vec);
 	void operator-=(Vec);
 };
+
+#include "Coord.h"
+#include "Image.h"

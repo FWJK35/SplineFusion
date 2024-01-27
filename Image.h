@@ -2,7 +2,8 @@
 
 #include "framework.h"
 #include "Kernel.h"
-#include "Coord.h"
+class Coord;
+class Pixel;
 
 class Image
 {
@@ -29,3 +30,5 @@ public:
 	void GrayScale();
 };
 
+#include "Coord.h"
+#include "Pixel.h"
