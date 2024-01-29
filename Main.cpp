@@ -208,20 +208,25 @@ int main()
 
 	EdgeGroup lineTesting;
 	if (true) {
-		lineTesting.addPoint(Coord(0, 0), 0);
-		lineTesting.addPoint(Coord(0, 1), 0);
-		lineTesting.addPoint(Coord(1, 2), 0);
 		lineTesting.addPoint(Coord(2, 3), 0);
-		lineTesting.addPoint(Coord(3, 3), 0);
-		lineTesting.addPoint(Coord(4, 4), 0);
-		lineTesting.addPoint(Coord(5, 4), 0);
+		lineTesting.addPoint(Coord(2, 4), 0);
+		lineTesting.addPoint(Coord(2, 5), 0);
+		lineTesting.addPoint(Coord(3, 6), 0);
+		lineTesting.addPoint(Coord(4, 6), 0);
+		lineTesting.addPoint(Coord(5, 5), 0);
 		lineTesting.addPoint(Coord(6, 4), 0);
 		lineTesting.addPoint(Coord(7, 4), 0);
-		lineTesting.addPoint(Coord(8, 4), 0);
+		lineTesting.addPoint(Coord(8, 3), 0);
 		lineTesting.addPoint(Coord(9, 4), 0);
-		lineTesting.addPoint(Coord(10, 4), 0);
-		lineTesting.addPoint(Coord(11, 3), 0);
-		lineTesting.addPoint(Coord(12, 2), 0);
+		lineTesting.addPoint(Coord(10, 5), 0);
+		lineTesting.addPoint(Coord(10, 6), 0);
+		lineTesting.addPoint(Coord(10, 7), 0);
+		lineTesting.addPoint(Coord(10, 8), 0);
+		lineTesting.addPoint(Coord(11, 9), 0);
+		lineTesting.addPoint(Coord(12, 9), 0);
+		lineTesting.addPoint(Coord(13, 8), 0);
+		lineTesting.addPoint(Coord(13, 7), 0);
+		lineTesting.addPoint(Coord(14, 6), 0);
 	}
 	Line output(0, 0, 0, 0);
 	lineTesting.GetSubLine(output);

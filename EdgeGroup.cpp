@@ -257,61 +257,6 @@ void EdgeGroup::Order()
 	size = coords.size();
 }
 
-void EdgeGroup::CalculateSlopeData()
-{
-	calculatedSlopes.clear();
-	slopeDerivatives.clear();
-	slope2ndDerivatives.clear();
-	if (size == 1) {
-		return;
-	}
-
-	if (size < 2) {
-		calculatedSlopes.push_back(0);
-		slopeDerivatives.push_back(0);
-		slope2ndDerivatives.push_back(0);
-	}
-	for (int i = 0; i < size; i++) {
-		calculatedSlopes.push_back(slopes[i]);
-	}
-	//calculate slopes based on secant between neighboring coordinates
-	//push first one
-	/*calculatedSlopes.push_back(coordAtan(coords[1] - coords[0]));
-	for (int i = 1; i < coords.size() - 1; i++) {
-		
-		double calcSlope = 0;
-		double r = 0.7;
-		int dist = std::min(i, size - i - 1);
-		for (int d = 1; d < dist; d++) {
-			calcSlope += coordAtan(coords[i + d] - coords[i - d]) * std::pow(r, d);
-		}
-		calcSlope /= (r/(1-r)) - std::pow(0.5, dist);
-		calculatedSlopes.push_back(calcSlope);
-	}
-	calculatedSlopes.push_back(coordAtan(coords[size - 1] - coords[size - 2]));*/
-
-	//calculate slope 1st derivative based on difference between them
-	for (int i = 0; i < size - 1; i++) {
-		double thisSlopeDerivative = compareSignedAngles(calculatedSlopes[i + 1], calculatedSlopes[i]);
-		slopeDerivatives.push_back(thisSlopeDerivative);
-	}
-	if (isCyclic) {
-		double thisSlopeDerivative = compareSignedAngles(slopes[slopes.size() - 1], slopes[0]);
-		slopeDerivatives.push_back(thisSlopeDerivative);
-	}
-	else {
-		slopeDerivatives.push_back(0);
-	}
-
-	slope2ndDerivatives.push_back(0);
-	for (int i = 0; i < slopeDerivatives.size() - 1; i++) {
-		double thisSlope2ndDerivative = slopeDerivatives[i+1] - slopeDerivatives[i];
-		slope2ndDerivatives.push_back(thisSlope2ndDerivative);
-	}
-	slope2ndDerivatives.push_back(0);
-	
-}
-
 int EdgeGroup::GetSubLine(Line& output) 
 {
 	int minSize = 5;
@@ -440,7 +385,6 @@ EdgeGroup* EdgeGroup::Split(int splitLocation)
 				slopes.push_back(*slopes.erase(slopes.begin()));
 			}
 		}
-		CalculateSlopeData();
 		return nullptr;
 	}
 	auto pointsItr = coords.begin();
