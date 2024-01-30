@@ -22,12 +22,13 @@
     <VCProjectVersion>17.0</VCProjectVersion>
     <ProjectGuid>{672FF45B-A9DC-41EE-B55E-A800BE4F7D02}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
+    <PlatformToolset>v142</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -122,7 +123,6 @@
     <ClCompile Include="Canny.cpp" />
     <ClCompile Include="CircleArc.cpp" />
     <ClCompile Include="Coord.cpp" />
-    <ClCompile Include="DXFWriter.cpp" />
     <ClCompile Include="EdgeGroup.cpp" />
     <ClCompile Include="Helpers.cpp" />
     <ClCompile Include="Image.cpp" />
@@ -141,7 +141,6 @@
     <ClInclude Include="Canny.h" />
     <ClInclude Include="CircleArc.h" />
     <ClInclude Include="Coord.h" />
-    <ClInclude Include="DXFWriter.h" />
     <ClInclude Include="EdgeGroup.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Helpers.h" />

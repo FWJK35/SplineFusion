@@ -38,7 +38,6 @@ public:
 	void TrimNodes(Node&);
 	void TrimStem(Node&, ImageData&);
 	void Order();
-	void CalculateSlopeData();
 	int GetSplitLocation();
 	int GetSubLine(Line&);
 	int GetSubArc(CircleArc&);

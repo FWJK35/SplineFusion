@@ -33,7 +33,6 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 	isCyclic = false;
 	//place nodes in order, starting from one end, or starting node if cyclic
 	Order();
-	CalculateSlopeData();
 	//free memory of nodes
 	for (Node* n : points) {
 		//delete(n);
@@ -397,7 +396,5 @@ EdgeGroup* EdgeGroup::Split(int splitLocation)
 		slopesItr = slopes.erase(slopesItr);
 	}
 	size = coords.size();
-	CalculateSlopeData();
-	(*other).CalculateSlopeData();
 	return other;
 }

@@ -13,7 +13,7 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "firefly.ppm";
+	string filename = "wagon.ppm";
 	image.open(filename, std::ios::binary);
 	newImage.open("new" + filename, std::ios::binary);
 
@@ -149,7 +149,7 @@ int main()
 			if (group.getSize() > 1) {
 				thresholded.WriteData(c, 1);
 				//slopeMagnitudes.WriteData(c, 0.5 - group.getSlopeDerivatives()[i] / M_PI_2);
-				slopeMagnitudes.WriteData(c, 1 - group.getCalculatedSlopes()[i]);
+				slopeMagnitudes.WriteData(c, 1);
 				slopeDirections.WriteData(c, color);
 				if (i == 0) {
 					slopeMagnitudes.WriteData(c, 1);
@@ -177,6 +177,15 @@ int main()
 			double sat = slopeMagnitudes.GetData(x, y);
 			double val = thresholded.GetData(x, y);
 
+			double threshold = 0.02;
+			//double val = sqrt(slopeMagnitudes.GetData(x, y) / (1 - threshold) - threshold);
+
+
+			//double* var = Kernel::variance(Coord(x, y), slopeDirections, slopeMagnitudes);
+			//if (var[1] > 0.5) sat = 0;
+			
+			
+			//val = sat;
 			PrecisePixel gradPix = PrecisePixel::fromHSV(hue, sat, val);
 			newPixels.WriteData(x, y, gradPix.round());
 		}
@@ -205,31 +214,6 @@ int main()
 
 	image.close();
 	newImage.close();
-
-	EdgeGroup lineTesting;
-	if (true) {
-		lineTesting.addPoint(Coord(2, 3), 0);
-		lineTesting.addPoint(Coord(2, 4), 0);
-		lineTesting.addPoint(Coord(2, 5), 0);
-		lineTesting.addPoint(Coord(3, 6), 0);
-		lineTesting.addPoint(Coord(4, 6), 0);
-		lineTesting.addPoint(Coord(5, 5), 0);
-		lineTesting.addPoint(Coord(6, 4), 0);
-		lineTesting.addPoint(Coord(7, 4), 0);
-		lineTesting.addPoint(Coord(8, 3), 0);
-		lineTesting.addPoint(Coord(9, 4), 0);
-		lineTesting.addPoint(Coord(10, 5), 0);
-		lineTesting.addPoint(Coord(10, 6), 0);
-		lineTesting.addPoint(Coord(10, 7), 0);
-		lineTesting.addPoint(Coord(10, 8), 0);
-		lineTesting.addPoint(Coord(11, 9), 0);
-		lineTesting.addPoint(Coord(12, 9), 0);
-		lineTesting.addPoint(Coord(13, 8), 0);
-		lineTesting.addPoint(Coord(13, 7), 0);
-		lineTesting.addPoint(Coord(14, 6), 0);
-	}
-	Line output(0, 0, 0, 0);
-	lineTesting.GetSubLine(output);
 
 	return 0;
 }
