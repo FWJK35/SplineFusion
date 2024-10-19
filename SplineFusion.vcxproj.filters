@@ -13,105 +13,123 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav</Extensions>
     </Filter>
+    <Filter Include="Source Files\imageprocessing">
+      <UniqueIdentifier>{02ef44ed-a0db-47a6-850d-1c8079a51797}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\svgwriting">
+      <UniqueIdentifier>{3ec12cf4-98c7-4610-9798-471f6164b288}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\structures">
+      <UniqueIdentifier>{c226eebd-4400-4a11-84cb-b7befce9c119}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Image.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Kernel.cpp">
+    <ClInclude Include="headers\Canny.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\CircleArc.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Coord.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\EdgeGroup.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\framework.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Helpers.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Image.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\ImageData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Kernel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Line.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Node.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Pixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\PrecisePixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\shapes.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Spline.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\SVGWriter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\Vec.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="headers\VecField.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Helpers.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Pixel.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="imageprocessing\Canny.cpp">
+      <Filter>Source Files\imageprocessing</Filter>
     </ClCompile>
-    <ClCompile Include="PrecisePixel.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="imageprocessing\Kernel.cpp">
+      <Filter>Source Files\imageprocessing</Filter>
     </ClCompile>
-    <ClCompile Include="Line.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="svgwriting\SVGWriter.cpp">
+      <Filter>Source Files\svgwriting</Filter>
     </ClCompile>
-    <ClCompile Include="Coord.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="svgwriting\CircleArc.cpp">
+      <Filter>Source Files\svgwriting</Filter>
     </ClCompile>
-    <ClCompile Include="Vec.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="svgwriting\Line.cpp">
+      <Filter>Source Files\svgwriting</Filter>
     </ClCompile>
-    <ClCompile Include="CircleArc.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="svgwriting\Spline.cpp">
+      <Filter>Source Files\svgwriting</Filter>
     </ClCompile>
-    <ClCompile Include="Spline.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\Coord.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-    <ClCompile Include="ImageData.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\EdgeGroup.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-    <ClCompile Include="VecField.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\Image.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-    <ClCompile Include="Canny.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\ImageData.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-    <ClCompile Include="EdgeGroup.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\Node.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-    <ClCompile Include="Node.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\Pixel.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-    <ClCompile Include="Helpers.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="structures\PrecisePixel.cpp">
+      <Filter>Source Files\structures</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="framework.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Kernel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Pixel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="PrecisePixel.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Line.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Coord.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Vec.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="CircleArc.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Spline.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ImageData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Image.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="VecField.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Canny.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="EdgeGroup.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Node.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Helpers.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="structures\Vec.cpp">
+      <Filter>Source Files\structures</Filter>
+    </ClCompile>
+    <ClCompile Include="structures\VecField.cpp">
+      <Filter>Source Files\structures</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

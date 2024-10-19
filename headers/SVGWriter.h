@@ -2,11 +2,11 @@
 
 #include "framework.h"
 
-class DXFWriter
+class SVGWriter
 {
 private:
 	std::string fileName;
 public:
-	DXFWriter(std::string);
+	SVGWriter(std::string);
 };
 

@@ -256,6 +256,35 @@ void EdgeGroup::Order()
 	size = coords.size();
 }
 
+//gets sum of distances of all intermediate points to the secant line formed by the start and end points using precomputed sums
+//sums in order are #p, x, x^2, y, y^2, x*y
+double EdgeGroup::GetDistSquaredSums(int startIndex, int endIndex, double* precomputedSums)
+{
+
+	Coord startPoint = coords[startIndex];
+	Coord startEndDiff = coords[endIndex] - coords[startIndex];
+
+	double xSumTerm1 = startPoint.getX() * startPoint.getX() * precomputedSums[0];
+	double xSumTerm2 = 2 * startPoint.getX() * precomputedSums[1];
+	double xSumTerm3 = precomputedSums[2];
+	double xSum = startEndDiff.getY() * startEndDiff.getY() * (xSumTerm1 + xSumTerm2 + xSumTerm3);
+
+	double ySumTerm1 = startPoint.getY() * startPoint.getY() * precomputedSums[0];
+	double ySumTerm2 = 2 * startPoint.getY() * precomputedSums[3];
+	double ySumTerm3 = precomputedSums[4];
+	double ySum = startEndDiff.getX() * startEndDiff.getX() * (ySumTerm1 + ySumTerm2 + ySumTerm3);
+
+	double xySumTerm1 = startPoint.getX() * startPoint.getY() * precomputedSums[0];
+	double xySumTerm2 = precomputedSums[5];
+	double xySumTerm3 = startPoint.getX() * precomputedSums[3];
+	double xySumTerm4 = startPoint.getY() * precomputedSums[1];
+	double xySum = 2 * startEndDiff.getX() * startEndDiff.getY() * (xySumTerm1 + xySumTerm2 - xySumTerm3 - xySumTerm4);
+
+	double summedSquares = (xSum + ySum - xySum) / (startEndDiff.magnitudeSquared());
+
+	return summedSquares;
+}
+
 int EdgeGroup::GetSubLine(Line& output) 
 {
 	int minSize = 5;
@@ -346,6 +375,7 @@ int EdgeGroup::GetSplitLocation()
 	correlationValues.push_back(0);
 	double maxCorrelation = 0;
 	for (int i = 1; i < size; i++) {
+
 		//calculate r-squared
 		double totalDistSquared = 0;
 		for (int p = 1; p < i; p++) {

@@ -38,6 +38,7 @@ public:
 	void TrimNodes(Node&);
 	void TrimStem(Node&, ImageData&);
 	void Order();
+	double GetDistSquaredSums(int, int, double*);
 	int GetSplitLocation();
 	int GetSubLine(Line&);
 	int GetSubArc(CircleArc&);

@@ -28,7 +28,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v142</PlatformToolset>
+    <PlatformToolset>v143</PlatformToolset>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
     <ConfigurationType>Application</ConfigurationType>
@@ -79,6 +79,9 @@
     <ClCompile>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <WarningLevel>Level3</WarningLevel>
+      <AdditionalUsingDirectories>
+      </AdditionalUsingDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)\headers;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -120,40 +123,43 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Canny.cpp" />
-    <ClCompile Include="CircleArc.cpp" />
-    <ClCompile Include="Coord.cpp" />
-    <ClCompile Include="EdgeGroup.cpp" />
-    <ClCompile Include="Helpers.cpp" />
-    <ClCompile Include="Image.cpp" />
-    <ClCompile Include="ImageData.cpp" />
-    <ClCompile Include="Kernel.cpp" />
-    <ClCompile Include="Line.cpp" />
-    <ClCompile Include="Main.cpp" />
-    <ClCompile Include="Node.cpp" />
-    <ClCompile Include="Pixel.cpp" />
-    <ClCompile Include="Spline.cpp" />
-    <ClCompile Include="Vec.cpp" />
-    <ClCompile Include="PrecisePixel.cpp" />
-    <ClCompile Include="VecField.cpp" />
+    <ClInclude Include="headers\Canny.h" />
+    <ClInclude Include="headers\CircleArc.h" />
+    <ClInclude Include="headers\Coord.h" />
+    <ClInclude Include="headers\EdgeGroup.h" />
+    <ClInclude Include="headers\framework.h" />
+    <ClInclude Include="headers\Helpers.h" />
+    <ClInclude Include="headers\Image.h" />
+    <ClInclude Include="headers\ImageData.h" />
+    <ClInclude Include="headers\Kernel.h" />
+    <ClInclude Include="headers\Line.h" />
+    <ClInclude Include="headers\Node.h" />
+    <ClInclude Include="headers\Pixel.h" />
+    <ClInclude Include="headers\PrecisePixel.h" />
+    <ClInclude Include="headers\shapes.h" />
+    <ClInclude Include="headers\Spline.h" />
+    <ClInclude Include="headers\SVGWriter.h" />
+    <ClInclude Include="headers\Vec.h" />
+    <ClInclude Include="headers\VecField.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Canny.h" />
-    <ClInclude Include="CircleArc.h" />
-    <ClInclude Include="Coord.h" />
-    <ClInclude Include="EdgeGroup.h" />
-    <ClInclude Include="framework.h" />
-    <ClInclude Include="Helpers.h" />
-    <ClInclude Include="Image.h" />
-    <ClInclude Include="ImageData.h" />
-    <ClInclude Include="Kernel.h" />
-    <ClInclude Include="Line.h" />
-    <ClInclude Include="Node.h" />
-    <ClInclude Include="Pixel.h" />
-    <ClInclude Include="Spline.h" />
-    <ClInclude Include="Vec.h" />
-    <ClInclude Include="PrecisePixel.h" />
-    <ClInclude Include="VecField.h" />
+    <ClCompile Include="Helpers.cpp" />
+    <ClCompile Include="imageprocessing\Canny.cpp" />
+    <ClCompile Include="imageprocessing\Kernel.cpp" />
+    <ClCompile Include="Main.cpp" />
+    <ClCompile Include="structures\Coord.cpp" />
+    <ClCompile Include="structures\EdgeGroup.cpp" />
+    <ClCompile Include="structures\Image.cpp" />
+    <ClCompile Include="structures\ImageData.cpp" />
+    <ClCompile Include="structures\Node.cpp" />
+    <ClCompile Include="structures\Pixel.cpp" />
+    <ClCompile Include="structures\PrecisePixel.cpp" />
+    <ClCompile Include="structures\Vec.cpp" />
+    <ClCompile Include="structures\VecField.cpp" />
+    <ClCompile Include="svgwriting\CircleArc.cpp" />
+    <ClCompile Include="svgwriting\Line.cpp" />
+    <ClCompile Include="svgwriting\Spline.cpp" />
+    <ClCompile Include="svgwriting\SVGWriter.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

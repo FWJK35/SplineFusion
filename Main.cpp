@@ -13,9 +13,10 @@ int main()
 
 	ifstream image;
 	ofstream newImage;
-	string filename = "wagon.ppm";
-	image.open(filename, std::ios::binary);
-	newImage.open("new" + filename, std::ios::binary);
+	string filename = "champs.ppm";
+	string folder = "testfiles/";
+	image.open(folder + filename, std::ios::binary);
+	newImage.open(folder + "new" + filename, std::ios::binary);
 
 	char currentChar = 0;
 	//type header
@@ -132,7 +133,7 @@ int main()
 			}
 		}
 	}
-	//edgeGroups.push_back((*edgeGroups[0]).Split(10));
+
 	//color pixels by edgegroup data
 	for (EdgeGroup* g : edgeGroups) {
 		EdgeGroup group = *g;
@@ -143,7 +144,6 @@ int main()
 		int index = 0;
 		for (int i = 0; i < group.getSize(); i++) {
 
-			//(*n).printData();
 			Coord c = group.getFinalPoints()[i];
 
 			if (group.getSize() > 1) {
@@ -167,7 +167,7 @@ int main()
 		
 	}
 
-	//converts data to pixel data
+	//converts data to output pixel data
 	double max = 0;
 	for (int y = 0; y < height; y++) {
 		for (int x = 0; x < width; x++) {
