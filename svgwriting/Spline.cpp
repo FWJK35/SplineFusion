@@ -1,5 +1,8 @@
 #include "Spline.h"
 
+/*
+* Creates a cubic spline with four given control points
+*/
 Spline::Spline(Vec a, Vec b, Vec c, Vec d)
 {
 	start = a;
@@ -18,6 +21,9 @@ Spline::Spline(Vec a, Vec b, Vec c, Vec d)
 
 }
 
+/*
+* Gets a point a given dist along this spline
+*/
 Vec Spline::getPointAlong(double dist)
 {
 	Vec vec1 = start.interpolate(controlA, dist);
@@ -30,6 +36,9 @@ Vec Spline::getPointAlong(double dist)
 	return endp1.interpolate(endp2, dist);
 }
 
+/*
+* Draws this spline to a given image
+*/
 void Spline::drawTo(Image& img)
 {
 	double step = 1.0 / length;

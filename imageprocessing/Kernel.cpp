@@ -1,5 +1,8 @@
 #include "Kernel.h"
 
+/*
+* Constructor for a new convolution kernel, takes a size and named type
+*/
 Kernel::Kernel(int aSize, std::string aType, double stdv)
 {
 	size = aSize;
@@ -73,21 +76,33 @@ Kernel::Kernel(int aSize, std::string aType, double stdv)
 
 }
 
+/*
+* Gets the size n of an n by n kernel
+*/
 int Kernel::getSize()
 {
 	return size;
 }
 
+/*
+* Gets the weights of each cell in the kernel as an n by n array
+*/
 float** Kernel::getWeights()
 {
 	return weights;
 }
 
+/*
+* Sets the weight of an individual cell of the kernel
+*/
 void Kernel::setWeight(int x, int y, float newWeight)
 {
 	weights[y][x] = newWeight;
 }
 
+/*
+* Convolves the kernel on a single pixel of an image
+*/
 Pixel Kernel::convolve(int x, int y, Image& pixels)
 {
 	PrecisePixel sum(0, 0, 0);
@@ -103,6 +118,9 @@ Pixel Kernel::convolve(int x, int y, Image& pixels)
 	return sum.round();
 }
 
+/*
+* Convolves the kernel on a single pixel of an array of data
+*/
 double Kernel::convolve(int x, int y, ImageData& imgData)
 {
 	double sum = 0;
@@ -119,6 +137,10 @@ double Kernel::convolve(int x, int y, ImageData& imgData)
 	return sum;
 }
 
+/*
+* Lowkey idk what this method does, it's not referenced anywhere,
+* but I don't wanna delete it in case I need it later
+*/
 double* Kernel::variance(Coord c, ImageData& vecs, ImageData& mags)
 {
 

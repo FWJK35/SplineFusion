@@ -1,5 +1,10 @@
 #include "EdgeGroup.h"
 
+/*
+* Creates a new EdgeGroup, generating and connecting edges from
+* a given start position, connecting correlated edges based on 
+* the angle of the edge they represent.
+*/
 EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 {
 	//collect points
@@ -39,12 +44,18 @@ EdgeGroup::EdgeGroup(int x, int y, ImageData& edges, ImageData& angles)
 	}
 }
 
+/*
+* Creates a new empty EdgeGroup literally why would u ever use this
+*/
 EdgeGroup::EdgeGroup()
 {
 	size = 0;
 	isCyclic = false;
 }
 
+/*
+* Prints the coordinates of every point in this EdgeGroup
+*/
 void EdgeGroup::printData()
 {
 	for (Node* n : points) {
@@ -53,46 +64,80 @@ void EdgeGroup::printData()
 	}
 }
 
+/*
+* Gets the size of this EdgeGroup
+*/
 int EdgeGroup::getSize()
 {
 	return coords.size();
 }
 
+/*
+* Gets whether this EdgeGroup is considered cyclic
+*/
 bool EdgeGroup::getCyclic()
 {
 	return isCyclic;
 }
 
+/*
+* Gets the vector containing all initial 
+* unordered nodes in this EdgeGroup
+*/
 std::vector<Node*> EdgeGroup::getPoints()
 {
 	return points;
 }
 
+/*
+* Gets the vector containing all ordered 
+* coordinate positions of nodes in this EdgeGroup
+*/
 std::vector<Coord> EdgeGroup::getFinalPoints()
 {
     return coords;
 }
 
+/*
+* Gets the vector containing all ordered edge slopes
+* of the nodes in this EdgeGroup
+*/
 std::vector<double> EdgeGroup::getSlopes()
 {
 	return slopes;
 }
 
+/*
+* Gets the vector containing all ordered calculated edge slopes
+* based of weighted averages of adjacent nodes of the nodes in this EdgeGroup
+*/
 std::vector<double> EdgeGroup::getCalculatedSlopes()
 {
 	return calculatedSlopes;
 }
 
+/*
+* Gets the vector containing all orderd calculated first derivatives between
+* adjacent slopes of adjacent nodes in this EdgeGroup
+*/
 std::vector<double> EdgeGroup::getSlopeDerivatives()
 {
 	return slopeDerivatives;
 }
 
+/*
+* Gets the vector containing all orderd calculated second derivatives between
+* adjacent slopes of adjacent nodes in this EdgeGroup
+*/
 std::vector<double> EdgeGroup::getSlope2ndDerivatives()
 {
 	return slope2ndDerivatives;
 }
 
+/*
+* Returns a single node in this EdgeGroup at the given x and y position,
+* if it exists, otherwise returns nullptr
+*/
 Node* EdgeGroup::getNode(int x, int y)
 {
 	for (Node* n : points) {
@@ -101,6 +146,10 @@ Node* EdgeGroup::getNode(int x, int y)
 	return nullptr;
 }
 
+/*
+* Adds a single point to the end of the coordinate and slope 
+* vectors of this EdgeGroup
+*/
 void EdgeGroup::addPoint(Coord c, double angle)
 {
 	coords.push_back(c);
@@ -108,6 +157,11 @@ void EdgeGroup::addPoint(Coord c, double angle)
 	size++;
 }
 
+/*
+* Recursive method to find all unfound adjacent nodes with 
+* relatively similar angles to a given stem, adding them to 
+* the list of found nodes in this EdgeGroup and setting them as "used"
+*/
 void EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 {
 	Node* current = new Node(Coord(x, y), angles.GetData(Coord(x, y)));
@@ -131,6 +185,10 @@ void EdgeGroup::StemFrom(int x, int y, ImageData& edges, ImageData& angles)
 	}
 }
 
+/*
+* Trims nodes from a given node, removing as many connections
+* as needed until only the two best matching connections remain
+*/
 void EdgeGroup::TrimNodes(Node& n)
 {
 	int bestNeighbors1 = 0;
@@ -181,6 +239,11 @@ void EdgeGroup::TrimNodes(Node& n)
 	}
 }
 
+/*
+* Recursively trims a given node down to two connections, 
+* makes that node immune to being trimmed, then continues 
+* on to TrimStem any connecting nodes
+*/
 void EdgeGroup::TrimStem(Node& n, ImageData& edges)
 {
 	TrimNodes(n);
@@ -201,6 +264,11 @@ void EdgeGroup::TrimStem(Node& n, ImageData& edges)
 	}
 }
 
+/*
+* Puts all found nodes into an ordered vector of coordinates
+* and an ordered vector of angles, creating a path for 
+* future methods to follow and perform analysis on
+*/
 void EdgeGroup::Order()
 {
 	if (points.size() <= 2) {
@@ -256,8 +324,11 @@ void EdgeGroup::Order()
 	size = coords.size();
 }
 
-//gets sum of distances of all intermediate points to the secant line formed by the start and end points using precomputed sums
-//sums in order are #p, x, x^2, y, y^2, x*y
+/*
+* gets sum of distances of all intermediate points to the 
+* secant line formed by the start and end points using precomputed sums
+* sums in order are #p, x, x^2, y, y^2, x*y
+*/
 double EdgeGroup::GetDistSquaredSums(int startIndex, int endIndex, double* precomputedSums)
 {
 
@@ -285,6 +356,11 @@ double EdgeGroup::GetDistSquaredSums(int startIndex, int endIndex, double* preco
 	return summedSquares;
 }
 
+/*
+* TODO finish this lmao
+* Gets the longest/first line of a desired length from this EdgeGroup
+* but lowkey doesn't work :sob:
+*/
 int EdgeGroup::GetSubLine(Line& output) 
 {
 	int minSize = 5;
@@ -359,10 +435,16 @@ int EdgeGroup::GetSubLine(Line& output)
 	return 0;
 }
 
+/*
+* Same thing as GetSubLine but I haven't even started lmao
+*/
 int EdgeGroup::GetSubArc(CircleArc& output) {
 	return 0;
 }
 
+/*
+* Gets the index of first occurring change in straightness of this EdgeGroup
+*/
 int EdgeGroup::GetSplitLocation()
 {
 	return -1;
@@ -403,6 +485,11 @@ int EdgeGroup::GetSplitLocation()
 	return -1;
 }
 
+/*
+* Splits this EdgeGroup at a given location and returns
+* a pointer to the second EdgeGroup created. If this EdgeGroup
+* was cyclic, makes itself non-cyclic and returns nullptr
+*/
 EdgeGroup* EdgeGroup::Split(int splitLocation)
 {
 	EdgeGroup* other = new EdgeGroup();

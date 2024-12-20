@@ -1,10 +1,16 @@
 #include "Line.h"
 
+/*
+* Creates a new line with given x and y position endpoints
+*/
 Line::Line(int x1, int y1, int x2, int y2) : Line(Vec(x1, y1), Vec(x2, y2))
 {
 
 }
 
+/*
+* Creates a line with given Vector position endpoints
+*/
 Line::Line(Vec aStart, Vec aEnd)
 {
 	start = aStart;
@@ -14,11 +20,17 @@ Line::Line(Vec aStart, Vec aEnd)
 	length = std::sqrt(dist.getX() * dist.getX() + dist.getY() * dist.getY());
 }
 
+/*
+* Gets the length of this line
+*/
 double Line::getLength()
 {
 	return length;
 }
 
+/*
+* Draws this line to a given image
+*/
 void Line::DrawTo(Image& img)
 {
 	Vec currentPoint = start;

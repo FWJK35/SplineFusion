@@ -1,5 +1,8 @@
 #include "CircleArc.h"
 
+/*
+* Creates a new circle arc with given endpoints and radians of curvature
+*/
 CircleArc::CircleArc(Vec aStart, Vec aEnd, double aCurvature)
 {
 	start = aStart;
@@ -20,6 +23,9 @@ CircleArc::CircleArc(Vec aStart, Vec aEnd, double aCurvature)
 	length = curvature * radius;
 }
 
+/*
+* Draws this circle arc to a given image
+*/
 void CircleArc::DrawTo(Image& img)
 {
 	/*start.DrawTo(img);
@@ -43,6 +49,9 @@ void CircleArc::DrawTo(Image& img)
 	}
 }
 
+/*
+* Returns the center of a circle arc given two endpoints and any intermediate point
+*/
 Vec CircleArc::GetCenter(Vec endpoint1, Vec centerpoint, Vec endpoint2)
 {
 	if ((centerpoint - endpoint1).getSlope() == (centerpoint - endpoint2).getSlope()) {

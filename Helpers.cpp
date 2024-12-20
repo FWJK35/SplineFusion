@@ -1,5 +1,8 @@
 #include "Helpers.h"
 
+/*
+* Returns the absolute difference between two angles between 0 and pi in radians
+*/
 double compareAngles(double a, double b)
 {
     double temp = std::min(a, b);
@@ -8,6 +11,9 @@ double compareAngles(double a, double b)
     return std::min(b - a, a - b + M_PI);
 }
 
+/*
+* Returns the signed difference between two angles between 0 and pi in radians
+*/
 double compareSignedAngles(double a, double b)
 {
     double temp = b - a;
@@ -16,6 +22,9 @@ double compareSignedAngles(double a, double b)
     return temp;
 }
 
+/*
+* Returns the difference between two angles between 0 and 2pi radians
+*/
 double compareFullAngles(double a, double b)
 {
     double temp = std::min(a, b);
@@ -24,6 +33,9 @@ double compareFullAngles(double a, double b)
     return std::min(b - a, a - b + M_PI * 2);
 }
 
+/*
+* Returns the angle of a given y/x ratio, limited in the range 0 to pi/2
+*/
 double limitedAtan(double a)
 {
     double ans = std::atan(a);
@@ -31,6 +43,9 @@ double limitedAtan(double a)
     return ans;
 }
 
+/*
+* Returns the angle of a given x and y offset, limited to increments of pi/4
+*/
 double fastAtan(int x, int y) {
     auto error = std::invalid_argument("Bad angle");
     switch (x) {
@@ -75,6 +90,9 @@ double fastAtan(int x, int y) {
     }
 }
 
+/*
+* Returns the angle of a given Coord from the origin in the range 0 to pi
+*/
 double coordAtan(Coord c) {
     double result = atan((double) -c.getY() / c.getX());
     if (result < 0) result += M_PI;

@@ -1,5 +1,10 @@
 #include "Canny.h"
 
+/*
+* Performs Sobel edge detection on each pixel, outputting the
+* direction and magnitudes to an array of directions, an array of magnitudes,
+* and an array of vectors
+*/
 void Canny::Sobel(Image& img, ImageData& directions, ImageData& magnitudes, VecField& output)
 {
 	for (int y = 0; y < img.getHeight(); y++) {
@@ -50,6 +55,11 @@ void Canny::Sobel(Image& img, ImageData& directions, ImageData& magnitudes, VecF
 	}
 }
 
+/*
+* Performs a Laplacian transformation on the sobel filtered image,
+* isolating the local maxima in the direction normal to the edge,
+* outputting the local maximum pixels to an output array as a 1 or 0
+*/
 void Canny::Laplacian(Image& img, ImageData& directions, ImageData& magnitudes, ImageData& output)
 {
 	for (int y = 0; y < img.getHeight(); y++) {
@@ -113,11 +123,17 @@ void Canny::Laplacian(Image& img, ImageData& directions, ImageData& magnitudes, 
 	}
 }
 
+/*
+* Uses a threshold filter to keep only significant local maxima,
+* and if a pixel is questionably significant, it will see if other 
+* significant values point towards it.
+*/
 void Canny::Threshold(ImageData& edgePixels, ImageData& magnitudes, double lower, double upper, ImageData& output)
 {
+	//initial thresholding
 	for (int y = 0; y < edgePixels.getHeight(); y++) {
 		for (int x = 0; x < edgePixels.getWidth(); x++) {
-			//only bother if it is a possible edge
+			//only bother thresholding if it is a possible edge
 			if (edgePixels.GetData(x, y) == 1) {
 
 				if (magnitudes.GetData(x, y) < lower) {
@@ -132,6 +148,8 @@ void Canny::Threshold(ImageData& edgePixels, ImageData& magnitudes, double lower
 			}
 		}
 	}
+
+	//connect all "strong" pixels to "questionable" ones
 	for (int y = 0; y < edgePixels.getHeight(); y++) {
 		for (int x = 0; x < edgePixels.getWidth(); x++) {
 			if (output.GetData(x, y) == 1) {
@@ -139,6 +157,7 @@ void Canny::Threshold(ImageData& edgePixels, ImageData& magnitudes, double lower
 			}
 		}
 	}
+	//erase all remaining questionable pixels as faded pixels
 	for (int y = 0; y < edgePixels.getHeight(); y++) {
 		for (int x = 0; x < edgePixels.getWidth(); x++) {
 			if (output.GetData(x, y) == 0.5) {
@@ -148,6 +167,10 @@ void Canny::Threshold(ImageData& edgePixels, ImageData& magnitudes, double lower
 	}
 }
 
+/*
+* Connects all "questionable" adjacent pixels and writes them as "strong,
+* then recursively calls itself on the new "strong" pixel
+*/
 void Canny::ConnectThreshold(ImageData& input, int x, int y)
 {
 	for (int yOffset = -1; yOffset <= 1; yOffset++) {

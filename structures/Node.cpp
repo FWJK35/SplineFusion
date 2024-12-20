@@ -1,5 +1,8 @@
 #include "Node.h"
 
+/*
+* Creates a new node at a given coordinate with a given edge angle
+*/
 Node::Node(Coord c, double angle)
 {
 	location = c;
@@ -8,6 +11,9 @@ Node::Node(Coord c, double angle)
 	connections = std::vector<Node*>();
 }
 
+/*
+* Connects this node to given node, avoiding duplicates
+*/
 void Node::Connect(Node* n)
 {
 	if (n == nullptr) {
@@ -22,6 +28,9 @@ void Node::Connect(Node* n)
 	}
 }
 
+/*
+* Disconnects this node from a given node if it exists
+*/
 void Node::Disconnect(Node* n)
 {
 	std::vector<Node*>::iterator it = connections.begin();
@@ -34,6 +43,9 @@ void Node::Disconnect(Node* n)
 	}
 }
 
+/*
+* Disconnects this node from all other connected nodes
+*/
 void Node::Kill()
 {
 	for (Node* cPointer : connections) {
@@ -41,21 +53,29 @@ void Node::Kill()
 	}
 }
 
+/*
+* Increases this node's count for how many other nodes it is the best neighbor for
+*/
 void Node::addBestNeighbor()
 {
 	bestNeighbors++;
 }
 
+/*
+* Increases this node's count for how many other 
+* nodes it is the best neighbor for by a given amount
+*/
 void Node::addBestNeighbor(int i)
 {
 	bestNeighbors += i;
 }
 
+/*
+* Calculates which of this node's connections are the strongest,
+* and increases the value of those nodes when being selected for trimming
+*/
 void Node::setBestNeighbors()
 {
-	if (location == Coord(421, 23)) {
-		int a = 0;
-	}
 	double minDiffA = M_PI;
 	Node* pointerA = nullptr;
 	double minDiffB = M_PI;

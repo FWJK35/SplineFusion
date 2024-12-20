@@ -27,6 +27,7 @@ public:
 	Coord operator*(int i);
 	void operator+=(Coord c);
 	void operator-=(Coord c);
+	void operator*=(int i);
 	bool operator==(Coord c);
 };
 

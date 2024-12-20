@@ -1,5 +1,8 @@
 #include "PrecisePixel.h"
 
+/*
+* Creates a new floating point pixel with given rgb values
+*/
 PrecisePixel::PrecisePixel(float r, float g, float b)
 {
 	red = r;
@@ -7,26 +10,41 @@ PrecisePixel::PrecisePixel(float r, float g, float b)
 	blue = b;
 }
 
+/*
+* Gets the red channel of this pixel
+*/
 float PrecisePixel::getRed()
 {
 	return red;
 }
 
+/*
+* Gets the green channel of this pixel
+*/
 float PrecisePixel::getGreen()
 {
 	return green;
 }
 
+/*
+* Gets the blue channel of this pixel
+*/
 float PrecisePixel::getBlue()
 {
 	return blue;
 }
 
+/*
+* Gets the average of the three color channels of this pixel
+*/
 double PrecisePixel::getAvg()
 {
 	return (red + green + blue) / 3.0;
 }
 
+/*
+* Rounds this pixel to a 3-byte pixel
+*/
 Pixel PrecisePixel::round()
 {
 	red = std::abs(red);
@@ -47,6 +65,9 @@ Pixel PrecisePixel::round()
 	return Pixel((uint8_t)newRed, (uint8_t)newGreen, (uint8_t)newBlue);
 }
 
+/*
+* Returns this pixel represented as a string
+*/
 std::string PrecisePixel::toString()
 {
 	std::ostringstream output;
@@ -54,6 +75,10 @@ std::string PrecisePixel::toString()
 	return output.str();
 }
 
+/*
+* Returns a precise pixel that is this pixel's rbg channels
+* scaled up by a given factor
+*/
 PrecisePixel PrecisePixel::operator*(const float factor)
 {
 	float newRed = red * factor;
@@ -63,6 +88,9 @@ PrecisePixel PrecisePixel::operator*(const float factor)
 	return PrecisePixel(newRed, newGreen, newBlue);
 }
 
+/*
+* Adds another pixel's rgb channels to this pixel's
+*/
 void PrecisePixel::operator+=(PrecisePixel added)
 {
 	red += added.red;
@@ -70,6 +98,10 @@ void PrecisePixel::operator+=(PrecisePixel added)
 	blue += added.blue;
 }
 
+/*
+* Returns a precise pixel with channels in HSV format
+* from given rgb color channels
+*/
 PrecisePixel PrecisePixel::fromRGB(double R, double G, double B)
 {
 	double M = std::max(std::max(R, G), B);
@@ -89,11 +121,19 @@ PrecisePixel PrecisePixel::fromRGB(double R, double G, double B)
 	return PrecisePixel(hue, sat, val);
 }
 
+/*
+* Returns a precise pixel with channels in HSV format
+* from a given pixel with channels in rgb format
+*/
 PrecisePixel PrecisePixel::fromRGB(PrecisePixel p)
 {
 	return fromRGB(p.getRed(), p.getGreen(), p.getBlue());
 }
 
+/*
+* Returns a precise pixel with channels in rgb format
+* from given HSV color channels
+*/
 PrecisePixel PrecisePixel::fromHSV(double hue, double sat, double val)
 {
 	while (hue >= 360) hue -= 360;
@@ -126,6 +166,10 @@ PrecisePixel PrecisePixel::fromHSV(double hue, double sat, double val)
 
 }
 
+/*
+* Returns a precise pixel with channels in rgb format
+* from a given pixel with channels in HSV format
+*/
 PrecisePixel PrecisePixel::fromHSV(PrecisePixel p)
 {
 	return fromHSV(p.getRed(), p.getGreen(), p.getBlue());

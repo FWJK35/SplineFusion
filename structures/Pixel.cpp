@@ -1,5 +1,8 @@
 #include "Pixel.h"
 
+/*
+* Creates a new 3-byte black pixel
+*/
 Pixel::Pixel()
 {
 	red = 0;
@@ -7,6 +10,9 @@ Pixel::Pixel()
 	blue = 0;
 }
 
+/*
+* Creates a new 3-byte pixel with given rgb values
+*/
 Pixel::Pixel(uint8_t r, uint8_t g, uint8_t b)
 {
 	red = r;
@@ -14,6 +20,9 @@ Pixel::Pixel(uint8_t r, uint8_t g, uint8_t b)
 	blue = b;
 }
 
+/*
+* Creates a new 3-byte grayscale pixel with a given value
+*/
 Pixel::Pixel(uint8_t v)
 {
 	red = v;
@@ -21,26 +30,41 @@ Pixel::Pixel(uint8_t v)
 	blue = v;
 }
 
+/*
+* Gets the red channel of this pixel
+*/
 int Pixel::getRed()
 {
 	return red;
 }
 
+/*
+* Gets the green channel of this pixel
+*/
 int Pixel::getGreen()
 {
 	return green;
 }
 
+/*
+* Gets the blue channel of this pixel
+*/
 int Pixel::getBlue()
 {
 	return blue;
 }
 
+/*
+* Gets the average of the three color channels of this pixel
+*/
 double Pixel::getAvg()
 {
 	return (red + green + blue) / 3.0;
 }
 
+/*
+* Returns this pixel represented as a string
+*/
 std::string Pixel::toString()
 {
 	std::ostringstream output;
@@ -48,6 +72,9 @@ std::string Pixel::toString()
 	return output.str();
 }
 
+/*
+* Sets all channel values of this pixel to the average of them
+*/
 void Pixel::makeGrayScale()
 {
 	int avg = (red + green + blue) / 3;
@@ -56,6 +83,9 @@ void Pixel::makeGrayScale()
 	blue = avg;
 }
 
+/*
+* Increases the contrast by pushing each color channel further towards 0 or 255
+*/
 void Pixel::increaseConrast(double amount)
 {
 	red = ((((red / 255.0) - 0.5) * amount) + 0.5) * 255.0;
@@ -63,6 +93,10 @@ void Pixel::increaseConrast(double amount)
 	blue = ((((blue / 255.0) - 0.5) * amount) + 0.5) * 255.0;
 }
 
+/*
+* Sets a pixel to white if the average of the three color channels
+* is above a threshold, otherwise sets to black
+*/
 void Pixel::threshold(int threshold)
 {
 	int avg = (red + green + blue) / 3;
@@ -78,6 +112,9 @@ void Pixel::threshold(int threshold)
 	}
 }
 
+/*
+* Converts this pixel to an array of bytes
+*/
 char* Pixel::toBytes()
 {
 	char* pix = new char[3];
@@ -87,6 +124,9 @@ char* Pixel::toBytes()
 	return pix;
 }
 
+/*
+* Adds another pixel's rgb channels to this pixel's
+*/
 void Pixel::operator+=(Pixel other)
 {
 	int newRed = std::min(red + other.red, 255);
@@ -97,6 +137,9 @@ void Pixel::operator+=(Pixel other)
 	blue = newBlue;
 }
 
+/*
+* Returns the average of this pixel with another
+*/
 Pixel Pixel::operator/(Pixel other)
 {
 	int newRed = (red + other.red) / 2;
@@ -105,6 +148,10 @@ Pixel Pixel::operator/(Pixel other)
 	return Pixel(newRed, newGreen, newBlue);
 }
 
+/*
+* Returns a precise pixel that is this pixel's rbg channels
+* scaled up by a given factor
+*/
 PrecisePixel Pixel::operator*(const float factor)
 {
 	float newRed = red * factor;

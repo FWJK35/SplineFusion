@@ -7,6 +7,9 @@
 #include "Spline.h"
 #include "EdgeGroup.h"
 
+/*
+* Main method to open file, run edge detection, and write the result to a new file
+*/
 int main()
 {
 	using namespace std;
